@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/content/template/template.xhtml">  
+        <ui:define name="rightHeader">
+
+        </ui:define>
+        <ui:define name="content">
+            <h:head>
+                <f:facet name="first">
+                    <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                    <title>Register</title>
+                    <h:outputStylesheet name="css/webshop.css"/>
+                </f:facet>
+            </h:head>
+            <h:body> 
+                  <h:form id="registerAccount">
+                        <div class="register">
+                            <h:messages errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage"/>
+                            <p:panelGrid columns="3" styleClass="register">
+                                <p:outputLabel value="Firstname: "/>
+                                <p:inputText id="firstname" value="#{registration.account.firstName}" validator="#{registerValidator.nameValidation}" required="true" requiredMessage="Please enter a Firstname"/>
+                                <p:message for="firstname"/>
+                                <p:outputLabel value="Lastname: "/>
+                                <p:inputText id="lastname" value="#{registration.account.lastName}" required="true" validator="#{registerValidator.nameValidation}" requiredMessage="Please enter a Lastname"/>
+                                <p:message for="lastname"/>
+                                <p:outputLabel value="E-Mail: "/>
+                                <p:inputText id="email" value="#{registration.account.email}" required="true" validator="#{registerValidator.mailValidation}" requiredMessage="Please enter the Email adress"/>
+                                <p:message for="email"/>
+                                <p:outputLabel value="Password: "/>
+                                <p:password id="password" value="#{registration.account.password}" match="confirmPassword" validatorMessage="The passwords don´t match" validator="#{registerValidator.passwordValidation}" required="true" requiredMessage="Please enter the Password"/>
+                                <p:message for="password"/>
+                                <p:outputLabel value="Password confirmation: "/>
+                                <p:password id="confirmPassword"  value="#{registration.account.password}" required="true" requiredMessage="Please confirm the Password"/>
+                                <p:message for="confirmPassword"/>
+                                <p:outputLabel value="Phone number "/>
+                                <p:inputText id="pnumber" value="#{registration.account.phoneNumber}" required="true" requiredMessage="Please enter the phone number"/>
+                                <p:message for="pnumber"/>
+                                <p:outputLabel value="Birthdate "/>
+                                <p:calendar id="birthdate" value='#{registration.account.birthday}' required="true" yearRange="c-100:c" pattern="dd-MM-yyyy" mask="true" navigator="true"  requiredMessage="Please enter your birthdate"/>
+                                <p:message for="birthdate"/>
+                                <p:outputLabel value="Street "/>
+                                <p:inputText id="street" value="#{registration.address.street}"  required="true" requiredMessage="Please enter the Street"/>
+                                <p:message for="street"/>
+                                <p:outputLabel value="ZIP-Code "/>
+                                <p:inputText id="zip" value="#{registration.address.zipCode}"  required="true" requiredMessage="Please enter the Zip-Code"/>
+                                <p:message for="zip"/>
+                                <p:outputLabel value="City "/>
+                                <p:inputText id="city" value="#{registration.address.city}"  required="true" requiredMessage="Please enter the City"/>
+                                <p:message for="city"/>
+                                <p:outputLabel value="Country "/>
+                                <p:inputText id="country" value="#{registration.address.country}"  required="true" requiredMessage="Please enter the Country"/>
+                                <p:message for="country"/>
+                                <p:commandButton type="reset" value="Reset"/>
+                                <p:commandButton type="submit" value="Register" action="#{registration.registered()}" update=":registerAccount">
+                                    <f:param name="accountID" value="#{registration.account.id}"/>
+                                </p:commandButton>
+                            </p:panelGrid>
+                        </div>
+                
+
+                </h:form>
+
+            </h:body>  
+        </ui:define> 
+    </ui:composition>  
+</html>

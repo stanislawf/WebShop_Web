@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/content/template/template.xhtml">  
+
+        <ui:define name="content">
+            <h:head>
+                <f:facet name="first">
+                    <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                    <title>Category</title>
+                    <h:outputStylesheet name="css/webshop.css"/>
+                </f:facet>
+                <f:metadata>
+                    <f:viewParam name="categoryID" value="#{categoryBean.category.id}"/>
+                    <f:viewAction action="#{categoryBean.findCategoryByID}"/>
+                </f:metadata>
+            </h:head>
+            <h:body>
+                <h:form>
+                    <div class="contentNav">
+                        <p:panelGrid columns="3" id="navigationPanel">
+                            <p:outputLabel for="category" value="Category: " style="vertical-align:middle; height: 7%"/>
+
+                            <p:selectOneMenu id="category" value="#{categoryBean.category.id}" style="width:200px"> 
+                                <f:selectItem itemLabel="Select Category" itemValue="" noSelectionOption="true" />
+
+                                <f:selectItems  value="#{categoryBean.allCategories}" itemValue="#{category.id}" var="category" itemLabel="#{category.name}">
+                                </f:selectItems>
+                            </p:selectOneMenu>
+                            <p:commandButton type="submit" value="Show" action="#{categoryBean.showCategoryArticles()}"/>
+                        </p:panelGrid>
+
+                    </div> 
+                    <div class="content-warp">
+                     
+                        <p:dataGrid var="article" value="#{categoryBean.articlesByCategory}" columns="3" 
+                                    rows="6"  paginator="true" id="articles"
+                                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+                            <p:column>
+                                <f:facet name="header">
+                                    Articles for the Category: #{categoryBean.category.name}
+                                </f:facet>
+
+                                <p:panel header="#{article.name}" style="text-align:center">
+                                    <p:panelGrid columns="1" style="width:100%"> 
+                                          <p:commandLink action="#{articleBean.displayArticleByID()}" value="#{article.name}">
+
+                                            <f:param id="articleID" name="articleID" value="#{article.id}"/>
+                                          
+
+                                        </p:commandLink>
+                                        
+                                        <p:link outcome="display" value="#{article.name}">
+                                         <f:param id="articlesID" name="articleID" value="#{article.id}"/>
+                                        </p:link>
+
+                                    </p:panelGrid>
+                                 </p:panel>
+                            </p:column>
+                        </p:dataGrid>
+                       
+                        <p:commandLink action="#{articleBean.displayArticleByID()}" value="Test"/>
+                    </div>
+                </h:form>
+            </h:body>
+        </ui:define>
+    </ui:composition>
+
+</html>

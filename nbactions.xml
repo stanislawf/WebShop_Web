@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-CreateTables</actionName>
+            <displayName>CreateTables</displayName>
+            <goals>
+                <goal>-e</goal>
+                <goal>hibernate3:hbm2ddl</goal>
+            </goals>
+        </action>
+    </actions>

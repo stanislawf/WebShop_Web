@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+ <ui:composition template="/content/template/template.xhtml">  
+    <ui:define name="rightHeader">
+      
+    </ui:define>
+    <ui:define name="content">
+      <h:head>
+        <f:facet name="first">
+          <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+          <title>Register</title>
+          <h:outputStylesheet name="css/webshop.css"/>
+        </f:facet>
+        <f:metadata>
+          <f:viewParam name="accountID" value="#{registration.account.id}"/>
+          <f:viewAction action="#{registration.getAccountInformationByID}"/>
+        </f:metadata>
+      </h:head>
+      <h:body> 
+        <h:form>
+          <div class="registerConfirmation">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Firstname: "/>
+                    <p:outputLabel value="#{registration.account.firstName}"/>
+                    <p:outputLabel value="Lastname: "/>
+                    <p:outputLabel value="#{registration.account.lastName}"/>
+                    <p:outputLabel value="E-Mail: "/>
+                    <p:outputLabel value="#{registration.account.email}"/>
+                    <p:outputLabel value="Password: "/>
+                    <p:outputLabel value="#{registration.account.password}"/>
+                    <p:outputLabel value="Phone number: "/>
+                    <p:outputLabel value="#{registration.account.phoneNumber}"/>
+                    <p:outputLabel value="Birthdate: "/>
+                    <p:outputLabel value="#{registration.account.birthday}"/>
+                    <p:outputLabel value="Street: "/>
+                    <p:outputLabel value="#{registration.address.street}"/>
+                    <p:outputLabel value="ZIP-Code: "/>
+                    <p:outputLabel value="#{registration.address.zipCode}"/>               
+                    <p:outputLabel value="City: "/>
+                    <p:outputLabel value="#{registration.address.city}"/>                  
+                    <p:outputLabel value="Country: "/>
+                    <p:outputLabel value="#{registration.address.country}"/>                    
+                </p:panelGrid><br/>
+            <p:link value="Go back to the WebShop" outcome="back"/>
+               </div>
+
+        </h:form>
+      </h:body></ui:define></ui:composition>
+</html>

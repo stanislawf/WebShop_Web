@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+
+
+    <h:body>
+        <h:outputStylesheet name="css/webshop.css"/>
+
+        <h:form>
+            <p:panelGrid  styleClass="nav" style=" background-color: #11006e !important;" columns="8" id="navigationPanel">
+                
+                <p:outputLabel value="Email:"/>
+                <p:inputText required="true"/>
+                <p:outputLabel value="Passwort:"/>
+                <p:password required="true"/>
+                <p:commandButton id="loginButton" value="asdf"/>
+                <p:link value="Register" outcome="register"/>
+                <h:link outcome="cart">
+                    <p:graphicImage value="/resources/images/Cart.PNG" width="35" height="35" title="Cart"/>
+                     
+                 </h:link>
+                <p:link outcome="cart" value="0"/>
+            </p:panelGrid> 
+        </h:form>
+    </h:body>
+</html>

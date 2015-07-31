@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+  <ui:composition template="/content/template/template.xhtml">  
+
+  <ui:define name="content">
+   <h:head>
+        <f:facet name="first">
+          <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+          <title>Article</title>
+          <h:outputStylesheet name="css/webshop.css"/>
+        </f:facet>
+        <f:metadata>
+            <f:viewParam id="articleID" name="articleID" value="#{articleBean.article.id}"/>
+              <f:viewParam id="articlesID" name="articleID" value="#{articleBean.article.id}"/>
+          <f:viewAction action="#{articleBean.findArticleByID}"/>
+        </f:metadata>
+      </h:head>
+    <h:body><h:form>
+    <div class="contentNav">
+        <p:panelGrid columns="3" id="navigationPanel">
+        <p:outputLabel for="category" value="Category: " style="vertical-align:middle; height: 7%"/>
+
+      <p:selectOneMenu id="category" value="#{categoryBean.category.id}" style="width:200px"> 
+        <f:selectItem itemLabel="Select Category" itemValue="" noSelectionOption="true" />
+
+        <f:selectItems  value="#{categoryBean.allCategories}" itemValue="#{category.id}" var="category" itemLabel="#{category.name}">
+        </f:selectItems>
+      </p:selectOneMenu>
+      <p:commandButton type="submit" value="Show" action="#{categoryBean.showCategoryArticles()}"/>
+     </p:panelGrid>
+   
+    </div> 
+    <div class="content-warp">
+      <p:fieldset legend="#{articleBean.article.name}" style="margin-bottom:20px">
+        <h:panelGrid columns="2" cellpadding="5">
+          <p:graphicImage alt="Not yet uploaded" />
+          <h:outputLabel value="Categories:"/>
+       
+          <h:outputLabel value="Preis:"/>
+          <h:outputText value="#{articleBean.article.price} €"/>
+          <h:outputLabel value="Description:"/>
+          <h:outputText value="#{articleBean.article.description}"/>
+        </h:panelGrid>
+      </p:fieldset>
+    </div>
+      
+  </h:form>
+  </h:body></ui:define>
+</ui:composition></html>

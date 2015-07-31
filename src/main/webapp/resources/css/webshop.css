@@ -1,0 +1,267 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 6, 2015, 8:38:48 PM
+    Author     : sf
+*/
+
+body
+{
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+  
+}
+
+a {
+  color: #4C9CF1;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+
+  color: #ffffff;
+
+}
+
+.errorMessage{
+  color:red;
+}
+
+.infoMessage{
+  color: blue;        
+}
+
+.warnMessage{
+  color: orange;
+}
+
+.header{
+  position: absolute; 
+  top: 2%; 
+  left: 0%; 
+  right: 0%; 
+  bottom: 0%; 
+  min-height: 12%; 
+  max-height: 12%;
+  width: 100%; 
+  padding: 0px 0px 0px 0px; 
+  display: block; 
+  background-color: #11006e;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.header #leftHeader { 
+  position: absolute; 
+  font-size: 200%;
+  top: 5%; 
+  left: 1%;
+  bottom: 5%;
+  //right: 0%; 
+  height: 90%; 
+  font-size: 2.6em;
+  width: 33%;
+  max-width: 35%; 
+  
+  padding: 0px 0px 0px 5px; 
+  display: block; 
+   background-color: #11006e;
+  z-index: 2;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.header #leftHeader .text{
+  padding-left: 2%;
+  padding-top: 1%;
+}
+
+.header #rightHeader { 
+  position: absolute;
+  font-size: 1.2em;
+  top: 5%; 
+  left: 35%;
+  bottom: 5%;
+  height: 90%; 
+  overflow: hidden;
+  width: 63.5%;
+  max-width: 64%;
+  padding: 0px 0px 0px 5px; 
+  display: block; 
+  background-color: #11006e;
+  z-index: 3;
+  text-decoration: none;
+}
+
+.header #rightHeader .ui-panelgrid.nav {
+    margin-top: 1% !important;
+    float: right !important;
+    width    : 70%!important;
+    max-width: 75%!important;
+    height   : 80%!important;
+    font-size: 0.7em !important;
+    overflow-x: no-display !important;
+    overflow-y: no-display !important;
+    background-color: #11006e !important;
+    color: #ffffff !important;
+}
+
+
+.header #rightHeader .ui-panelgrid.nav tr{
+    border-style: none !important;
+    top: 100%!important;
+    width: 20%!important;
+    max-width: 22%!important;
+    bottom: 100% !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+     background-color: #11006e !important;
+}
+
+.header #rightHeader .ui-panelgrid.nav td{
+      width: 2%!important; 
+       background-color: #11006e !important;
+        color: #ffffff !important;
+}
+
+.header #rightHeader .ui-panelgrid td, .ui-panelgrid tr
+{
+    border-style: none !important;
+     background-color: #11006e !important;
+      color: #ffffff !important;
+}
+
+.header #rightHeader .ui-panelgrid a{
+     color: #ffffff !important;
+}
+
+
+/*//insert header befor .ui-panelgrid and also
+.header #rightHeader table .ui-panelgrid{
+    border: none !important;
+    text-align: left !important;
+    font-size: 0.7em !important;
+    float: right !important;
+    margin-top: 2.25%;
+    margin-right: 1%;
+    width: 98.5% !important;
+    margin-left: 1.5%;
+     background-color: #11006e;
+}
+
+.ui-panelgrid>*>tr,
+.ui-panelgrid>*>tr>td {
+    border: none !important;
+}*/
+
+
+.container{
+position: absolute;
+  display: block;
+background: #444;
+margin-top: 0.5%;
+ z-index: 1;
+margin-left: 1%;
+height: auto;
+margin-right: 1%;
+  width: 98%; 
+  height: auto;
+  margin-bottom: 1%;
+}
+
+.container #content{
+display: block;
+background: #ff3333;
+/*background: #444;*/
+margin-top: 7%;
+ z-index: 3;
+margin-left: 5%;
+margin-right: 5%;
+margin-bottom: 1%;
+width: 90%; 
+height: auto;
+min-height: 650px;
+}
+
+.container #content .contentNav{
+  color: brown;
+  min-height: 10%;
+  vertical-align:middle;
+  
+  background:  #009999;
+   margin-top: 10%;
+   margin-left: 5%;
+   margin-right: 5%;
+   width: auto;
+     padding-top: 1%;
+    padding-bottom: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
+    overflow: auto;
+}
+
+
+.container #content .content-warp {
+    line-height: 25px;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 10%;
+    margin-top: 2%;
+    height: auto;
+    color: white;
+    background: #4C9CF1;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    padding-left: 3%;
+    padding-right: 3%;
+}
+
+.container #content  .ui-panelgrid {
+     background: #444 !important;
+     border-style: none !important;
+    
+}
+
+.container #content  .ui-panelgrid .ui-panelgrid-cell  {
+     background: #444 !important;
+     border-style: none !important;
+     font-size: 0.9em;
+}
+
+.container #content  .register{
+  
+  position:absolute;
+  background: #444;
+  margin-left: 20%;
+  margin-top: 5%;  
+  width: 55%;
+}
+
+.container #content .registerConfirmation{
+  position:absolute;
+   background: #444;
+  margin-left: 35%;
+  margin-top: 5%;  
+ width: 25%;
+ font-size: 1.2em;
+}
+
+/*.ui-panelgrid.register {
+    position : absolute !important;
+    
+    border: none !important;
+    background: #444 !important;
+    
+    border-color: white;
+}
+
+.ui-panelgrid .ui-panelgrid-cell  {
+     background: #444 !important;
+     border-style: none !important;
+     font-size: 0.8em;
+     
+}*/
