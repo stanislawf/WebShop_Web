@@ -22,7 +22,9 @@ and open the template in the editor.
         <f:metadata>
             <f:viewParam id="articleID" name="articleID" value="#{articleBean.article.id}"/>
               <f:viewParam id="articlesID" name="articleID" value="#{articleBean.article.id}"/>
+              <f:viewParam name="articleID" value="#{cartBean.articleID}"/>
           <f:viewAction action="#{articleBean.findArticleByID}"/>
+          <f:viewAction action="#{cartBean.findArticle()}"/>
         </f:metadata>
       </h:head>
     <h:body><h:form>
@@ -41,6 +43,7 @@ and open the template in the editor.
    
     </div> 
     <div class="content-warp">
+    
       <p:fieldset legend="#{articleBean.article.name}" style="margin-bottom:20px">
         <h:panelGrid columns="2" cellpadding="5">
           <p:graphicImage alt="Not yet uploaded" />
@@ -52,8 +55,14 @@ and open the template in the editor.
           <h:outputText value="#{articleBean.article.description}"/>
         </h:panelGrid>
       </p:fieldset>
+        
+        <p:commandButton update=":navigationPanel" id="addToCart" value="Add article to Cart" action="#{cartBean.addArticleToCart()}">
+          <!--  <f:attribute name="articleIDAction" value="#{articleBean.article.id}"/>-->
+          <!--  <f:setPropertyActionListener target="#{cartBean.articleID}" value="#{articleBean.article.id}" />-->
+        </p:commandButton>
+      
     </div>
       
-  </h:form>
+  </h:form>  
   </h:body></ui:define>
 </ui:composition></html>

@@ -13,6 +13,32 @@
         </navigation-case>
     </navigation-rule>
     <navigation-rule>
+        <from-view-id>/content/shoppingCart.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{orderBean.guest()}</from-action>
+            <from-outcome>guest</from-outcome>
+            <to-view-id>/content/order.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/content/shoppingCart.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{orderBean.user()}</from-action>
+            <from-outcome>user</from-outcome>
+            <to-view-id>/content/registerAccount.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+      <navigation-rule>
+        <from-view-id>/content/loginError.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>loginFailureBack</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
         <from-view-id>/index.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>register</from-outcome> 
@@ -28,8 +54,24 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
+     <navigation-rule>
+        <from-view-id>/content/order.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>register</from-outcome> 
+            <to-view-id>/content/registerAccount.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
       <navigation-rule>
         <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>cart</from-outcome> 
+            <to-view-id>/content/shoppingCart.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/content/order.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>cart</from-outcome> 
             <to-view-id>/content/shoppingCart.xhtml</to-view-id>

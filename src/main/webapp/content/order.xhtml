@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:composition template="/content/template/template.xhtml">  
+        <ui:define name="content">
+            <h:head>
+                <f:facet name="first">
+                    <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                    <title>Ordering</title>
+                    
+                </f:facet>
+            </h:head>
+            <h:body> 
+                <div class="content-warp">
+                    <h:form>
+                <h:outputStylesheet name="css/webshop.css"/>
+                <p:wizard>
+                    <p:tab id="personal" title="Personal">
+                        <p:panel header="Personal Information">
+                            
+                        </p:panel>
+                    </p:tab>
+                    <p:tab id="address" title="Address">
+                        <p:panel header="Address Information">
+                            
+                        </p:panel>
+                    </p:tab>
+                    <p:tab id="contact" title="Contact">
+                        <p:panel header="Contact Information">
+                            
+                        </p:panel>
+                    </p:tab>
+                    <p:tab id="confirmation" title="Confirmation">
+                        <p:panel header="Information Confirmation">
+                            
+                        </p:panel>
+                    </p:tab>
+                    
+                </p:wizard>
+                </h:form>
+                </div>
+            </h:body>
+        </ui:define>
+    </ui:composition>
+</html>

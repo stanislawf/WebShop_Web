@@ -10,22 +10,23 @@
 
     <h:body>
         <h:outputStylesheet name="css/webshop.css"/>
-
-        <h:form>
-            <p:panelGrid  styleClass="nav" style=" background-color: #11006e !important;" columns="8" id="navigationPanel">
+        
+            <form method="POST" action="j_security_check">
+            <p:panelGrid  styleClass="nav" style=" background-color: #11006e !important;" columns="9" id="navigationPanel">
                 
-                <p:outputLabel value="Email:"/>
-                <p:inputText required="true"/>
-                <p:outputLabel value="Passwort:"/>
-                <p:password required="true"/>
-                <p:commandButton id="loginButton" value="asdf"/>
+                <p:outputLabel value="Email:" for="j_username"/>
+                <p:inputText label="Email" id="j_username"/>
+                <p:outputLabel value="Passwort:" for="j_password"/>
+                <p:password label="password" id="j_password"/>
+                <p:commandButton value="Login" type="submit"/>
                 <p:link value="Register" outcome="register"/>
                 <h:link outcome="cart">
                     <p:graphicImage value="/resources/images/Cart.PNG" width="35" height="35" title="Cart"/>
                      
                  </h:link>
-                <p:link outcome="cart" value="0"/>
+                <p:link outcome="cart" value="#{cartBean.cartSize}"/>
+                 <p:commandButton id="logoutButton" value="Logout" action="#{loginBean.logout()}" />
             </p:panelGrid> 
-        </h:form>
+        </form>
     </h:body>
 </html>

@@ -20,9 +20,53 @@ and open the template in the editor.
                 </f:facet>
             </h:head>
             <h:body> 
+                <div class="content-warp">
                 <h:outputStylesheet name="css/webshop.css"/>
-                <h:form>
-                    Das ist eine Testseite :D
-                </h:form>
-            </h:body></ui:define></ui:composition>
+                <h:form id="cart">
+                    <p:dataTable value="#{cartBean.orderLines}" var="orderLine">
+                       
+                        <p:column headerText="Article name">
+                            <p:outputLabel value="#{orderLine.article.name}"/>
+                        </p:column>
+                         <p:column headerText="Price">
+                             <p:outputLabel value="#{orderLine.article.price} €"/>
+                         </p:column>
+                        <p:column headerText="Quantity" >
+                            <div style="text-align: center">
+                                <p:commandButton value="-" action="#{cartBean.decreaseArticleQuantity()}" update=":cart, :navigationPanel">
+                                    <f:param name="orderLineID" value="#{orderLine.id}"/>
+                                </p:commandButton>
+                           
+                                <p:outputLabel value="    #{orderLine.quantity}       "/>
+                                <p:commandButton value="+" action="#{cartBean.increaseArticleQuantity()}" update=":cart, :navigationPanel">
+                                    <f:param name="orderLineID" value="#{orderLine.id}"/>
+                                </p:commandButton>
+                           </div>
+                        </p:column>
+                        
+                        <p:column headerText="Total price per Article">
+                            <p:outputLabel value="#{orderLine.quantity * orderLine.article.price}"/>
+                        </p:column>
+                        
+                        <p:column>
+                            <p:commandButton value="Remove article" action="#{cartBean.removeArticleFromCart()}"  update=":cart, :navigationPanel">
+                                <!--<f:param name="orderLineID" value="#{orderLine.id}"/>-->
+    <!--<f:setPropertyActionListener target="" value="#{orderLine.id}" />-->
+                            </p:commandButton>
+                         </p:column>
+                    </p:dataTable>
+                    <p:commandButton value="Clear Cart" action="#{cartBean.clearCart()}" update=":cart, :navigationPanel"/>
+                    <p:commandButton value="Order" rendered="#{cartBean.cartSize>0}" onclick="PF('orderDialog').show();"/>
+                        </h:form>
+                    <p:dialog widgetVar="orderDialog" header="How do you want to order?" resizable="false">
+                        <h:form>
+                            <p:commandButton value="As a Guest" action="#{orderBean.guest()}"/>
+                            <p:commandButton value="As a User" action="#{orderBean.user()}"/>
+                        </h:form>
+                    </p:dialog>
+            
+                </div>
+            </h:body>
+        </ui:define>
+    </ui:composition>
 </html>
