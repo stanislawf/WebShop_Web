@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
 
 
@@ -11,22 +12,27 @@
     <h:body>
         <h:outputStylesheet name="css/webshop.css"/>
         
-            <form method="POST" action="j_security_check">
+        <h:form id="loginform">
             <p:panelGrid  styleClass="nav" style=" background-color: #11006e !important;" columns="9" id="navigationPanel">
-                
-                <p:outputLabel value="Email:" for="j_username"/>
-                <p:inputText label="Email" id="j_username"/>
-                <p:outputLabel value="Passwort:" for="j_password"/>
-                <p:password label="password" id="j_password"/>
-                <p:commandButton value="Login" type="submit"/>
+                <c:if test="#{request.userPrincipal == null}" >
+                <p:outputLabel value="Email:" for="username"/>
+                <p:inputText value="#{loginBean.email}" id="username" required="true"/>
+                <p:outputLabel value="Passwort:" for="password"/>
+                <p:password value="#{loginBean.password}" id="password" required="true"/>
+                <p:commandButton value="Login" action="#{loginBean.login()}" update="loginform"/>
+                </c:if>
+                <c:if test="#{request.userPrincipal != null}" >
+                    <p:outputLabel value="Welcome #{request.userPrincipal.name}" />
+                <p:commandButton id="logoutButton" value="Logout" action="#{loginBean.logout()}" update="loginform"/>
+                </c:if>
                 <p:link value="Register" outcome="register"/>
                 <h:link outcome="cart">
                     <p:graphicImage value="/resources/images/Cart.PNG" width="35" height="35" title="Cart"/>
-                     
+              
                  </h:link>
-                <p:link outcome="cart" value="#{cartBean.cartSize}"/>
-                 <p:commandButton id="logoutButton" value="Logout" action="#{loginBean.logout()}" />
+                       <p:link outcome="cart" value="#{cartBean.cartSize}"/>
+                 
             </p:panelGrid> 
-        </form>
+        </h:form>
     </h:body>
 </html>

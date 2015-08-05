@@ -24,8 +24,8 @@
     <navigation-rule>
         <from-view-id>/content/shoppingCart.xhtml</from-view-id>
         <navigation-case>
-            <from-action>#{orderBean.user()}</from-action>
-            <from-outcome>user</from-outcome>
+            <from-action>#{orderBean.login()}</from-action>
+            <from-outcome>login</from-outcome>
             <to-view-id>/content/registerAccount.xhtml</to-view-id>
             <redirect/>
         </navigation-case>

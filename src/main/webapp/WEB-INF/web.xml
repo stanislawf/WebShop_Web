@@ -27,52 +27,37 @@
     </welcome-file-list>
     
     <security-constraint>
-        <display-name>Admin Page Constraint</display-name>
         <web-resource-collection>
-            <web-resource-name>Administrative Pages</web-resource-name>
-            <description/>
-            <url-pattern>/content/admin/*</url-pattern>
+            <web-resource-name>admin</web-resource-name>
+            <url-pattern>/faces/content/admin/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <description/>
-            <role-name>Admin</role-name>
+            <role-name>Admin</role-name> 
         </auth-constraint>
-         <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
     </security-constraint>
-    
     <security-constraint>
-        <display-name>User Page Constraint</display-name>
         <web-resource-collection>
-            <web-resource-name>User Pages</web-resource-name>
-            <description/>
-            <url-pattern>/conctent/user/*</url-pattern>
+            <web-resource-name>user</web-resource-name>
+            <url-pattern>/faces/content/user/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <description/>
-            <role-name>Admin</role-name>
             <role-name>User</role-name>
+            <role-name>Admin</role-name>
         </auth-constraint>
-         <user-data-constraint>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
-        </user-data-constraint>
     </security-constraint>
-    
-    <login-config>
-        <auth-method>FORM</auth-method>
-        <realm-name>file</realm-name>
-        <form-login-config>
-            <form-login-page>/faces/index.xhtml</form-login-page>
-            <form-error-page>/content/loginError.xhtml</form-error-page>
-        </form-login-config>
-    </login-config>
+ 
     <security-role>
-        <description>Administrator</description>
         <role-name>Admin</role-name>
     </security-role>
     <security-role>
-        <description>Normal User</description>
         <role-name>User</role-name>
     </security-role>
+
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/faces/index.xhtml</form-login-page>
+            <form-error-page>/faces/content/loginError.xhtml</form-error-page>
+        </form-login-config>
+    </login-config>
 </web-app>

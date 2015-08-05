@@ -10,6 +10,7 @@ import info.novatec.webshop.entities.OrderLine;
 import info.novatec.webshop.persistence.ArticleManager;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -17,7 +18,6 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 
 /**
  *
@@ -79,15 +79,16 @@ public class ShoppingCartBean implements Serializable{
             orderLine = orderLines.get(index);
             orderLine.setQuantity((byte)(orderLine.getQuantity() + 1));
             orderLines.set(index, orderLine);
-        System.out.println("I´m old");
         }else{
             orderLine = new OrderLine();
-        orderLine.setArticle(article);
-        orderLine.setQuantity(Byte.valueOf("1"));
-        orderLines.add(orderLine);
-        System.out.println("I´m new");
+            orderLine.setArticle(article);
+            orderLine.setQuantity(Byte.valueOf("1"));
+            orderLines.add(orderLine);
         }
         
+        for(OrderLine ol: orderLines){
+            System.out.println("The orderlineID is: " + ol.getId() + " and it contains the following article: " + ol.getArticle().getId());
+        }
         
     }
     
@@ -99,29 +100,38 @@ public class ShoppingCartBean implements Serializable{
     
     public void removeArticleFromCart(){
         System.out.println("1 is here");
-        Map<String, String> params;
         FacesContext fc = FacesContext.getCurrentInstance();
-        params =  fc.getExternalContext().getRequestParameterMap();
+        Map<String, String> params = (Map<String, String>) fc.getExternalContext().getRequestParameterMap();
         
+        
+       
+        String olID = params.get("orderLineID");
+        System.out.println("OrderLineID new is: " + olID);
         System.out.println("Test IS: " + params.get("orderLineID"));
         System.out.println("2 is here");
-        Long id = Long.parseLong(params.get("orderLineID"));
-        for(OrderLine ol: orderLines){
-            if(ol.getId().equals(orderLineID)){
-                
-                orderLines.remove(ol);
+        orderLineID = Long.parseLong(params.get("orderLineID"));
+         System.out.println("Size is old: " + orderLines.size());
+  
+        int indexToDelete = -1;
+        for (int i = 0; i < orderLines.size(); i++) {
+            System.out.println("Test!!!!");
+            if(orderLines.get(i).getArticle().getId().equals(orderLineID)){
+                System.out.println("ArticleID in orderLines: " + orderLines.get(i).getArticle().getId());
+                indexToDelete = i;
             }
         }
+        orderLines.remove(indexToDelete);
+        System.out.println("Size new is: " + orderLines.size());
     }
     
     public void increaseArticleQuantity(){
         Map<String, String> params;
         FacesContext fc = FacesContext.getCurrentInstance();
         params =  fc.getExternalContext().getRequestParameterMap();
-        Long id = Long.getLong(params.get("orderLineID"));
-        System.out.println("OrderLineArticleID: " + id);
+       orderLineID = Long.parseLong(params.get("orderLineID"));
+        System.out.println("OrderLineArticleID: " + orderLineID);
         for(OrderLine ol: orderLines){
-            if(ol.getId().equals(id)){
+            if(orderLineID == ol.getArticle().getId()){
                 System.out.println("Quantity before is: " + ol.getQuantity());
                 System.out.println("Article ID is: "+ ol.getArticle().getId());
                 byte b = (byte) ol.getQuantity();
@@ -136,10 +146,10 @@ public class ShoppingCartBean implements Serializable{
         Map<String, String> params;
         FacesContext fc = FacesContext.getCurrentInstance();
         params =  fc.getExternalContext().getRequestParameterMap();
-        Long id = Long.getLong(params.get("orderLineID"));
-         System.out.println("OrderLineArticleID: " + id);
+        orderLineID = Long.parseLong(params.get("orderLineID"));
+         System.out.println("OrderLineArticleID: " + orderLineID);
         for(OrderLine ol: orderLines){
-            if(ol.getId().equals(id)){
+            if(orderLineID == ol.getArticle().getId()){
                 System.out.println("Article ID is: "+ ol.getArticle().getId());
                  byte b = (byte) ol.getQuantity();
                 b = (byte) (b-1);

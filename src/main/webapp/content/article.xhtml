@@ -29,7 +29,7 @@ and open the template in the editor.
       </h:head>
     <h:body><h:form>
     <div class="contentNav">
-        <p:panelGrid columns="3" id="navigationPanel">
+        <p:panelGrid columns="3" id="innerNavigationPanel">
         <p:outputLabel for="category" value="Category: " style="vertical-align:middle; height: 7%"/>
 
       <p:selectOneMenu id="category" value="#{categoryBean.category.id}" style="width:200px"> 
@@ -56,7 +56,7 @@ and open the template in the editor.
         </h:panelGrid>
       </p:fieldset>
         
-        <p:commandButton update=":navigationPanel" id="addToCart" value="Add article to Cart" action="#{cartBean.addArticleToCart()}">
+        <p:commandButton update=":loginform:navigationPanel" value="Add article to Cart" action="#{cartBean.addArticleToCart()}">
           <!--  <f:attribute name="articleIDAction" value="#{articleBean.article.id}"/>-->
           <!--  <f:setPropertyActionListener target="#{cartBean.articleID}" value="#{articleBean.article.id}" />-->
         </p:commandButton>

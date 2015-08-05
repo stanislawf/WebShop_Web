@@ -9,7 +9,8 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <ui:composition template="/content/template/template.xhtml">  
         <ui:define name="content">
             <h:head>
@@ -22,8 +23,12 @@ and open the template in the editor.
             <h:body> 
                 <div class="content-warp">
                 <h:outputStylesheet name="css/webshop.css"/>
+             
                 <h:form id="cart">
-                    <p:dataTable value="#{cartBean.orderLines}" var="orderLine">
+                       <c:if test="#{cartBean.cartSize==0}" >
+                                 <p>There are no Articles in the Shopping Cart.</p>
+                         </c:if>
+                    <p:dataTable value="#{cartBean.orderLines}" var="orderLine"  rendered="#{cartBean.cartSize>0}">
                        
                         <p:column headerText="Article name">
                             <p:outputLabel value="#{orderLine.article.name}"/>
@@ -33,13 +38,13 @@ and open the template in the editor.
                          </p:column>
                         <p:column headerText="Quantity" >
                             <div style="text-align: center">
-                                <p:commandButton value="-" action="#{cartBean.decreaseArticleQuantity()}" update=":cart, :navigationPanel">
-                                    <f:param name="orderLineID" value="#{orderLine.id}"/>
+                                <p:commandButton value="-" action="#{cartBean.decreaseArticleQuantity()}" update=":cart, :loginform:navigationPanel">
+                                     <f:param name="orderLineID" value="#{orderLine.article.id}" />
                                 </p:commandButton>
                            
                                 <p:outputLabel value="    #{orderLine.quantity}       "/>
-                                <p:commandButton value="+" action="#{cartBean.increaseArticleQuantity()}" update=":cart, :navigationPanel">
-                                    <f:param name="orderLineID" value="#{orderLine.id}"/>
+                                <p:commandButton value="+" action="#{cartBean.increaseArticleQuantity()}" update=":cart, :loginform:navigationPanel">
+                                      <f:param name="orderLineID" value="#{orderLine.article.id}" />
                                 </p:commandButton>
                            </div>
                         </p:column>
@@ -49,22 +54,35 @@ and open the template in the editor.
                         </p:column>
                         
                         <p:column>
-                            <p:commandButton value="Remove article" action="#{cartBean.removeArticleFromCart()}"  update=":cart, :navigationPanel">
-                                <!--<f:param name="orderLineID" value="#{orderLine.id}"/>-->
-    <!--<f:setPropertyActionListener target="" value="#{orderLine.id}" />-->
+                            <p:commandButton value="Remove article" action="#{cartBean.removeArticleFromCart()}"  update=":cart, :loginform:navigationPanel">
+                                <f:param name="orderLineID" value="#{orderLine.article.id}" />
                             </p:commandButton>
                          </p:column>
                     </p:dataTable>
-                    <p:commandButton value="Clear Cart" action="#{cartBean.clearCart()}" update=":cart, :navigationPanel"/>
+                    <p:commandButton value="Clear Cart" rendered="#{cartBean.cartSize>0}" action="#{cartBean.clearCart()}" update=":cart, :loginform:navigationPanel"/>
                     <p:commandButton value="Order" rendered="#{cartBean.cartSize>0}" onclick="PF('orderDialog').show();"/>
                         </h:form>
-                    <p:dialog widgetVar="orderDialog" header="How do you want to order?" resizable="false">
+                
+                
+                <p:dialog widgetVar="orderDialog" header="How do you want to order?" resizable="false" >
                         <h:form>
-                            <p:commandButton value="As a Guest" action="#{orderBean.guest()}"/>
-                            <p:commandButton value="As a User" action="#{orderBean.user()}"/>
+                            <p:commandButton value="As a Guest" action="#{orderBean.guest()}" style="width: 150px;"/>
+                            <p:commandButton value="As a User" onclick="PF('loginDialog').show(); PF('orderDialog').hide();" style="width: 150px;"/>
                         </h:form>
                     </p:dialog>
-            
+                
+                <p:dialog widgetVar="loginDialog" header="Please login to your account for ordering" resizable="false"  >
+                        <h:form style="tex">
+                            <p:panelGrid columns="2" styleClass="nav" style=" background-color: #11006e !important;">
+                                <p:outputLabel value="Email:" for="username"/>
+                                <p:inputText value="#{loginBean.email}" id="username" required="true"/>
+                                <p:outputLabel value="Passwort:" for="password"/>
+                                <p:password value="#{loginBean.password}" id="password" required="true"/>
+                                <p:commandButton value="Login" onclick="PF('regDialog').hide();" action="#{loginBean.login()}" update=":loginform"/>
+                            </p:panelGrid>
+                        </h:form>
+                    </p:dialog>
+                
                 </div>
             </h:body>
         </ui:define>

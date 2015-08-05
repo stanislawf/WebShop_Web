@@ -27,8 +27,8 @@ public class OrderBean {
        return "guest";
    }
    
-   public String user(){
-       return "user";
+   public String login(){
+       return "login";
    }
    
 }
