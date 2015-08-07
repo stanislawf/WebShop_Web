@@ -15,21 +15,13 @@
     <navigation-rule>
         <from-view-id>/content/shoppingCart.xhtml</from-view-id>
         <navigation-case>
-            <from-action>#{orderBean.guest()}</from-action>
+            <from-action>#{cartBean.guest()}</from-action>
             <from-outcome>guest</from-outcome>
             <to-view-id>/content/order.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
-    <navigation-rule>
-        <from-view-id>/content/shoppingCart.xhtml</from-view-id>
-        <navigation-case>
-            <from-action>#{orderBean.login()}</from-action>
-            <from-outcome>login</from-outcome>
-            <to-view-id>/content/registerAccount.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>
+    
       <navigation-rule>
         <from-view-id>/content/loginError.xhtml</from-view-id>
         <navigation-case>

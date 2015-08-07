@@ -250,18 +250,50 @@ min-height: 650px;
  font-size: 1.2em;
 }
 
-/*.ui-panelgrid.register {
-    position : absolute !important;
+.ui-panelgrid {
+     background: #444 !important;
+     border-style: none !important;
     
-    border: none !important;
-    background: #444 !important;
-    
-    border-color: white;
 }
 
 .ui-panelgrid .ui-panelgrid-cell  {
      background: #444 !important;
      border-style: none !important;
-     font-size: 0.8em;
-     
-}*/
+     font-size: 0.9em;
+}
+
+.center{
+ margin: 0 auto;
+}
+
+
+.header #rightHeader .ui-panelgrid.loggedIn {
+    margin-top: 1% !important;
+    float: right !important;
+    width    : 40%!important;
+    max-width: 45%!important;
+    height   : 80%!important;
+    font-size: 0.7em !important;
+    overflow-x: no-display !important;
+    overflow-y: no-display !important;
+    background-color: #11006e !important;
+    color: #ffffff !important;
+}
+
+
+.header #rightHeader .ui-panelgrid.loggedIn tr{
+    border-style: none !important;
+    top: 100%!important;
+    width: 20%!important;
+    max-width: 22%!important;
+    bottom: 100% !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+     background-color: #11006e !important;
+}
+
+.header #rightHeader .ui-panelgrid.loggedIn td{
+       background-color: #11006e !important;
+        color: #ffffff !important;
+       
+}

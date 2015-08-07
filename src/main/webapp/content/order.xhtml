@@ -9,7 +9,8 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"> 
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"> 
     <ui:composition template="/content/template/template.xhtml">  
         <ui:define name="content">
             <h:head>
@@ -21,31 +22,90 @@ and open the template in the editor.
             </h:head>
             <h:body> 
                 <div class="content-warp">
-                    <h:form>
+                    <h:form id="orderingPanel">
                 <h:outputStylesheet name="css/webshop.css"/>
-                <p:wizard>
-                    <p:tab id="personal" title="Personal">
-                        <p:panel header="Personal Information">
-                            
-                        </p:panel>
-                    </p:tab>
-                    <p:tab id="address" title="Address">
-                        <p:panel header="Address Information">
-                            
-                        </p:panel>
-                    </p:tab>
-                    <p:tab id="contact" title="Contact">
-                        <p:panel header="Contact Information">
-                            
-                        </p:panel>
-                    </p:tab>
-                    <p:tab id="confirmation" title="Confirmation">
-                        <p:panel header="Information Confirmation">
-                            
-                        </p:panel>
+                <p:accordionPanel dynamic="true" cache="true" id="orderingAccordion">
+                    <p:tab id="deliveryAddress" title="Delivery Address">
+                       
+                            <p:messages/> <c:if test="#{request.userPrincipal == null}" >
+                            <h:panelGrid columns="2">
+                               
+                                    <p:outputLabel value="Firstname:" for="firstnameDelivering"/>
+                                    <p:inputText required="true" id="firstnameDelivering"  value="#{orderBean.deliveryAddress.firstName}" requiredMessage="Please insert the firstname"/>
+                                    <p:outputLabel value="Lastname:" for="lastnameDelivering"/>
+                                    <p:inputText required="true"  id="lastnameDelivering"  value="#{orderBean.deliveryAddress.lastName}" requiredMessage="Please insert the lastname"/>
+                                    <p:outputLabel value="Street:" for="streetDelivering"/>
+                                    <p:inputText required="true"  id="streetDelivering" value="#{orderBean.deliveryAddress.street}" requiredMessage="Please insert the street"/>
+                                    <p:outputLabel value="City:" for="cityDelivering"/>
+                                    <p:inputText required="true"  id="cityDelivering"  value="#{orderBean.deliveryAddress.city}" requiredMessage="Please insert the city"/>
+                                    <p:outputLabel value="ZIP-Code: " for="zipDelivering" />
+                                    <p:inputText required="true"  id="zipDelivering" value="#{orderBean.deliveryAddress.zipCode}" requiredMessage="Please insert the zip code"/>
+                                    <p:outputLabel value="Country"  for="countryDelivering"/>
+                                    <p:inputText required="true"  id="countryDelivering" value="#{orderBean.deliveryAddress.country}" requiredMessage="Please insert the country"/>  
+                              
+                                    
+                            </h:panelGrid></c:if>
+                            <p:outputLabel value="Is the billing address the same as the delivery address?"/>
+                                    <p:selectBooleanCheckbox value="#{orderBean.same}">
+                                           <p:ajax update="orderingAccordion"/>
+                                    </p:selectBooleanCheckbox>
+                                   
+                    </p:tab>  
+                    
+                    <p:tab title="Billing Address"  disabled="#{orderBean.same == true}">
+                      
+                             <h:panelGrid columns="2">
+                                <c:if test="#{request.userPrincipal == null}" >
+                                    <p:outputLabel value="Firstname:" for="firstname"/>
+                                    <p:inputText required="true" id="firstname"  value="#{orderBean.billingAddress.firstName}"/>
+                                    <p:outputLabel value="Lastname:" for="lastname"/>
+                                    <p:inputText required="true"  id="lastname"  value="#{orderBean.billingAddress.lastName}"/>
+                                    <p:outputLabel value="Street:" for="street"/>
+                                    <p:inputText required="true"  id="street" value="#{orderBean.billingAddress.street}"/>
+                                    <p:outputLabel value="City:" for="city"/>
+                                    <p:inputText required="true"  id="city"  value="#{orderBean.billingAddress.city}"/>
+                                    <p:outputLabel value="ZIP-Code: " for="zip" />
+                                    <p:inputText required="true"  id="zip" value="#{orderBean.billingAddress.zipCode}"/>
+                                    <p:outputLabel value="Country"  for="country"/>
+                                    <p:inputText required="true"  id="country" value="#{orderBean.billingAddress.country}"/>                              
+                                 </c:if>
+                            </h:panelGrid>
+                      
                     </p:tab>
                     
-                </p:wizard>
+                     <p:tab id="bill" title="Billing information">
+                    
+                              <h:panelGrid>
+                                  
+                            </h:panelGrid>
+                      
+                    </p:tab>
+                    
+                    <p:tab id="confirmation" title="Confirmation">
+                        <p:dataTable value="#{orderBean.orderLines}" var="orderLine">
+                       
+                        <p:column headerText="Article name">
+                            <p:outputLabel value="#{orderLine.article.name}"/>
+                        </p:column>
+                         <p:column headerText="Price">
+                             <p:outputLabel value="#{orderLine.article.price} €"/>
+                         </p:column>
+                        <p:column headerText="Quantity" >
+                            <div style="text-align: center">
+                                <p:outputLabel value="    #{orderLine.quantity}       "/>
+                           </div>
+                        </p:column>
+                        
+                        <p:column headerText="Total Article price">
+                            <p:outputLabel value="#{orderLine.quantity * orderLine.article.price}"/>
+                        </p:column>
+                        
+                    </p:dataTable>
+                        <p:outputLabel style="font-weight: bold !important;" value="Total Price: "/>
+                        <p:outputLabel style="font-weight: bold !important;" value="#{orderBean.totalPrice}"/>
+                    </p:tab>
+                    
+                </p:accordionPanel>
                 </h:form>
                 </div>
             </h:body>

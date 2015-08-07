@@ -13,11 +13,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -158,13 +161,18 @@ public class ShoppingCartBean implements Serializable{
         }
     }
     
+     public String guest() {
+        setSessionMap();
+        return "guest";
+    }
     
     
-//    public void addToCartListener(ActionEvent event){
-//        Long s = (Long) event.getComponent().getAttributes().get("articleIDAction");
-//        System.out.println("Test: " + s);
-//        articleID = s;
-//    }
+     public void setSessionMap(){
+         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+         Map<String, Object> sessionMap = externalContext.getSessionMap();
+         sessionMap.put("cart", orderLines);
+     }
+
     
     public void setArticleID(Long id){
         this.articleID = id;

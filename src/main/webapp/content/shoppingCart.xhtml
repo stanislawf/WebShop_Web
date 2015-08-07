@@ -28,7 +28,7 @@ and open the template in the editor.
                        <c:if test="#{cartBean.cartSize==0}" >
                                  <p>There are no Articles in the Shopping Cart.</p>
                          </c:if>
-                    <p:dataTable value="#{cartBean.orderLines}" var="orderLine"  rendered="#{cartBean.cartSize>0}">
+                    <p:dataTable value="#{cartBean.orderLines}" var="orderLine"  rendered="#{cartBean.cartSize>0}" id="orderLinesTabel">
                        
                         <p:column headerText="Article name">
                             <p:outputLabel value="#{orderLine.article.name}"/>
@@ -64,21 +64,24 @@ and open the template in the editor.
                         </h:form>
                 
                 
-                <p:dialog widgetVar="orderDialog" header="How do you want to order?" resizable="false" >
+                <p:dialog widgetVar="orderDialog" header="How do you want to order?" resizable="false" appendTo="@(body)" modal="true">
                         <h:form>
-                            <p:commandButton value="As a Guest" action="#{orderBean.guest()}" style="width: 150px;"/>
+                            <p:commandButton value="As a Guest" action="#{cartBean.guest()}" style="width: 150px;"/>
                             <p:commandButton value="As a User" onclick="PF('loginDialog').show(); PF('orderDialog').hide();" style="width: 150px;"/>
                         </h:form>
                     </p:dialog>
                 
-                <p:dialog widgetVar="loginDialog" header="Please login to your account for ordering" resizable="false"  >
-                        <h:form style="tex">
-                            <p:panelGrid columns="2" styleClass="nav" style=" background-color: #11006e !important;">
+                <p:dialog style="alignment-baseline: middle " widgetVar="loginDialog" header="Please login to your account for ordering" resizable="false" appendTo="@(body)" modal="true">
+                        <h:form >
+                            <p:panelGrid columns="2" styleClass="center" style="background-color: #11006e !important; ">
+                              
                                 <p:outputLabel value="Email:" for="username"/>
                                 <p:inputText value="#{loginBean.email}" id="username" required="true"/>
                                 <p:outputLabel value="Passwort:" for="password"/>
                                 <p:password value="#{loginBean.password}" id="password" required="true"/>
                                 <p:commandButton value="Login" onclick="PF('regDialog').hide();" action="#{loginBean.login()}" update=":loginform"/>
+                                <p/>
+                               
                             </p:panelGrid>
                         </h:form>
                     </p:dialog>
