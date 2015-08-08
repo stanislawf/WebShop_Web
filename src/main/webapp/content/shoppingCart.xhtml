@@ -28,7 +28,7 @@ and open the template in the editor.
                        <c:if test="#{cartBean.cartSize==0}" >
                                  <p>There are no Articles in the Shopping Cart.</p>
                          </c:if>
-                    <p:dataTable value="#{cartBean.orderLines}" var="orderLine"  rendered="#{cartBean.cartSize>0}" id="orderLinesTabel">
+                    <p:dataTable value="#{cartBean.orderLines}" var="orderLine"  rendered="#{cartBean.cartSize>0}" id="orderLinesTabel" style="margin-bottom:20px">
                        
                         <p:column headerText="Article name">
                             <p:outputLabel value="#{orderLine.article.name}"/>
@@ -50,7 +50,7 @@ and open the template in the editor.
                         </p:column>
                         
                         <p:column headerText="Total price per Article">
-                            <p:outputLabel value="#{orderLine.quantity * orderLine.article.price}"/>
+                            <p:outputLabel value="#{orderLine.quantity * orderLine.article.price} €"/>
                         </p:column>
                         
                         <p:column>

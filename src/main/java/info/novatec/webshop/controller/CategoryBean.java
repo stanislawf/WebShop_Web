@@ -79,8 +79,10 @@ public class CategoryBean implements Serializable {
   }
 
   public String showCategoryArticles() {
-   
-    return "show";
+    if(category.getId() != null)
+        return "show";
+    
+    return null;
   }
   
 }
