@@ -7,7 +7,8 @@ package info.novatec.webshop.controller;
 
 import info.novatec.webshop.entities.Account;
 import info.novatec.webshop.entities.Address;
-import info.novatec.webshop.entities.Role;
+import info.novatec.webshop.entities.AccountRole;
+import info.novatec.webshop.entities.AccountUser;
 import info.novatec.webshop.persistence.AccountManager;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,32 +27,31 @@ import javax.inject.Named;
 @Named(value = "registration")
 @RequestScoped
 public class RegistrationBean implements Serializable {
+    
+  private static final long serialVersionUID = 1L;
 
-  /**
-   * Creates a new instance of RegistrationBean
-   */
   @EJB
   private AccountManager accountService;
 
   private Account account;
   private Address address;
-  private Role role;
+  private AccountRole role;
   
 //Überprüfen ob bereits ein Account existiert.
 //
   @PostConstruct
   public void init() {
-    account = new Account();
+    account = new AccountUser();
     address = new Address();
-    role = new Role();
+    role = new AccountRole();
     
   }
 
-  public Role getRole() {
+  public AccountRole getRole() {
     return role;
   }
 
-  public void setRole(Role role) {
+  public void setRole(AccountRole role) {
     this.role = role;
   }
 
@@ -73,33 +73,32 @@ public class RegistrationBean implements Serializable {
 
   public String registered() {
 
-    try {
-      role = accountService.getRoleByRoleType("User");
-      List<Role> roles = new ArrayList<>();
-      roles.add(role);
-      account.setRoles(roles);
-      boolean accountPersisted = accountService.createAccount(account);
-      address.setFirstName(account.getFirstName());
-      address.setLastName(account.getLastName());
-      address.setAccount(account);
-      boolean addressPersisted = accountService.createAddress(address);
-      if(accountPersisted == true && addressPersisted == true){
-         return "success";
-      } 
-    } catch (Exception e) {
-      System.err.println("The user could not be registered");
-      System.err.println(e.getMessage());
-    }
+//    try {
+//      role = accountService.getRoleByRoleType("User");
+//      List<AccountRole> roles = new ArrayList<>();
+//      roles.add(role);
+//      account.s(roles);
+//      boolean accountPersisted = accountService.createAccount(account);
+//      address.setFirstName(account.getFirstName());
+//      address.setLastName(account.getLastName());
+//      address.setAccount(account);
+//      boolean addressPersisted = accountService.createAddress(address);
+//      if(accountPersisted == true && addressPersisted == true){
+//         return "success";
+//      } 
+//    } catch (Exception e) {
+//      System.err.println("The user could not be registered");
+//      System.err.println(e.getMessage());
+//    }
     return null;
   }
 
-  private void addMessage(FacesMessage facesMessage) {
-    FacesContext.getCurrentInstance().addMessage(null, facesMessage);
-  }
+
   
   public void getAccountInformationByID(){
-    System.err.println("Die AccountID lautet: " + account.getId() + " und die AddressID lautet: " + address.getId());
     account =  accountService.getAccountById(account.getId());
-    address = accountService.getAddressByAccount(account);
+    List<Account> accounts = new ArrayList();
+    accounts.add(account);
+    address = accountService.getAddressByHomeAddress(true, accounts);
   }
 }

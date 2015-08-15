@@ -22,12 +22,8 @@ import javax.enterprise.context.RequestScoped;
 @Named(value = "categoryBean")
 @RequestScoped
 public class CategoryBean implements Serializable {
-
-  /**
-   * Creates a new instance of CategoryBean
-   */
-  public CategoryBean() {
-  }
+    
+  private static final long serialVersionUID = 1L;
 
   @EJB
   private CategoryManager categoryService;
@@ -64,23 +60,26 @@ public class CategoryBean implements Serializable {
   public void setCategory(Category category) {
     this.category = category;
   }
-
+  
+//--> Name lässt einen
+//          Returnvalue vermuten. Bzw einen übergebenen Parameter
+//--> Ist das LazyLoading?
   public void findCategoryByID() {
-//    System.err.println("CategoryID is: " + category.getId());
     category = categoryService.getCategoryByID(category.getId());
-     this.findArticlesByCategoryName();
+    this.findArticlesByCategoryName();
   }
   
+//  --> Name lässt einen
+//          Returnvalue vermuten. Bzw einen übergebenen Parameter
   private void findArticlesByCategoryName(){
     articlesByCategory = categoryService.getAllArticleByCategoryName(category.getName());
-    for(Article article : articlesByCategory){
-      System.out.println(article.getName() + " " +  article.getId());
-    }
   }
 
+//  --> JavaDoc
   public String showCategoryArticles() {
-    if(category.getId() != null)
+    if(category.getId() != null){
         return "show";
+    }
     
     return null;
   }

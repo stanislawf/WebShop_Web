@@ -6,19 +6,18 @@
 package info.novatec.webshop.controller;
 
 import info.novatec.webshop.entities.Account;
+import info.novatec.webshop.entities.AccountUser;
 import info.novatec.webshop.entities.Address;
 import info.novatec.webshop.entities.Bill;
 import info.novatec.webshop.entities.CreditCard;
 import info.novatec.webshop.entities.OrderLine;
-import info.novatec.webshop.entities.Orders;
+import info.novatec.webshop.entities.PurchaseOrder;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -31,46 +30,37 @@ import javax.faces.event.ValueChangeEvent;
 @Named(value = "orderBean")
 @RequestScoped
 public class OrderBean implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
-    private Orders order;
+    private PurchaseOrder order;
     private Address deliveryAddress;
     private Address billingAddress;
     private Bill bill = new Bill();
-    private Date orderDate;
     private double totalPrice;
     private List<OrderLine> orderLines;
     private Account account;
     private CreditCard creditCard;
-    private boolean same = false;
-    private boolean confirmedDeliveryAddress = false;
-    private boolean checked = false;
-    private boolean disable;
-    private boolean rendered;
+  
 
     @PostConstruct
     public void init() {
-        order = new Orders();
+        order = new PurchaseOrder();
         deliveryAddress = new Address();
         billingAddress = new Address();
+//        --> Was, wenn sessionMap leer ist oder cart nicht enthält??
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         Map<String, Object> sessionMap = externalContext.getSessionMap();
         orderLines = (List<OrderLine>) sessionMap.get("cart");
         totalPrice = calculateTotalPrice();
         creditCard = new CreditCard();
-        account = new Account();
-        isTabEnabled = false;
+        account = new AccountUser();
        
     }
     
     
 
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
+   
 
     public double getTotalPrice() {
         return totalPrice;
@@ -80,27 +70,11 @@ public class OrderBean implements Serializable {
         this.totalPrice = totalPrice;
     }
 
-    public boolean isConfirmedDeliveryAddress() {
-        return confirmedDeliveryAddress;
-    }
-
-    public void setConfirmedDeliveryAddress(boolean confirmedDeliveryAddress) {
-        this.confirmedDeliveryAddress = confirmedDeliveryAddress;
-    }
-
-    public boolean isSame() {
-        return same;
-    }
-
-    public void setSame(boolean same) {
-        this.same = same;
-    }
-
-    public Orders getOrder() {
+    public PurchaseOrder getOrder() {
         return order;
     }
 
-    public void setOrder(Orders order) {
+    public void setOrder(PurchaseOrder order) {
         this.order = order;
     }
 
@@ -160,77 +134,6 @@ public class OrderBean implements Serializable {
         return price;
     }
 
-    public void adaptAddresses() {
-        if (same) {
-            billingAddress = deliveryAddress;
-            System.out.println("deliveryAddress: " + deliveryAddress.getFirstName());
-        } else {
-            billingAddress = new Address();
-        }
-        System.out.println(deliveryAddress.getFirstName());
-    }
-
-    private boolean disableTab = true;
-
-    public boolean isDisableTab() {
-        return disableTab;
-    }
-
-    public void setDisableTab(boolean disableTab) {
-        this.disableTab = disableTab;
-    }
-
-    private boolean isTabEnabled;
-
-    public boolean isIsTabEnabled() {
-        return isTabEnabled;
-    }
-
-    public void setIsTabEnabled(boolean isTabEnabled) {
-        this.isTabEnabled = isTabEnabled;
-    }
-
-    //new
-    private boolean mostrar = false;
-
-    public boolean isMostrar() {
-        return mostrar;
-    }
-
-    public void setMostrar(boolean mostrar) {
-        this.mostrar = mostrar;
-    }
-
-    private String claveEtiqueta;
-
-    public String getClaveEtiqueta() {
-        return claveEtiqueta;
-    }
-
-    public void setClaveEtiqueta(String claveEtiqueta) {
-        this.claveEtiqueta = claveEtiqueta;
-    }
-
-    public void mostrarOcultar() {
-        if (isInvalidarEtiqueta()) {
-            setMostrar(true);
-        } else {
-            setMostrar(false);
-        }
-        System.out.println("inv: " + isInvalidarEtiqueta());
-        System.out.println("most: " + isMostrar());
-    }
-
-    private boolean invalidarEtiqueta;
-
-    public boolean isInvalidarEtiqueta() {
-        return invalidarEtiqueta;
-    }
-
-    public void setInvalidarEtiqueta(boolean invalidarEtiqueta) {
-        this.invalidarEtiqueta = invalidarEtiqueta;
-    }
-
     private boolean checkboxValue = false;
     private boolean renderValue = false;
 
@@ -251,21 +154,30 @@ public class OrderBean implements Serializable {
     }
 
     public void changeRenderValue(ValueChangeEvent e) {
-        System.out.println("The old values are:");
-        System.out.println("checkboxValue: " + checkboxValue);
-        System.out.println("renderValue: " + renderValue);
-        
         checkboxValue = (boolean) e.getNewValue();
         
-        if(isCheckboxValue() == true){
+        if(isCheckboxValue()){
             setRenderValue(true);
         }else{
            setRenderValue(false);
         }
+    }
+    
+    public void prepareOrder(){
+//        RequestContext context = RequestContext.getCurrentInstance();
+//        context.execute("PF('confirm').show();");
+        order.setDeliveryAddress(deliveryAddress);
+        if(checkboxValue){
+            order.setBillingAddress(deliveryAddress);
+        }else{
+            order.setBillingAddress(billingAddress);
+        }
+        order.setTotalPrice(totalPrice);
+        order.setOrderLines(orderLines);
+        order.setBill(bill);
         
-        System.out.println("The new values are:");
-        System.out.println("checkboxValue: " + checkboxValue);
-        System.out.println("renderValue: " + renderValue);
+
+        
     }
 
 }
