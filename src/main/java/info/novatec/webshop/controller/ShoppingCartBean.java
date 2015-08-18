@@ -26,7 +26,7 @@ import javax.faces.context.FacesContext;
 @Named(value = "cartBean")
 @SessionScoped
 public class ShoppingCartBean implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     private List<OrderLine> orderLines;
@@ -56,8 +56,7 @@ public class ShoppingCartBean implements Serializable {
         return orderLines.size();
     }
 
-//    --> s bei contains zu viel :P
-    private boolean checkIfOrderLinesContainsArticle() {
+    private boolean checkIfOrderLinesContainArticle() {
         for (OrderLine ol : orderLines) {
             if (ol.getArticle().getId().equals(article.getId())) {
                 return true;
@@ -78,7 +77,7 @@ public class ShoppingCartBean implements Serializable {
     }
 
     public void addArticleToCart() {
-        if (checkIfOrderLinesContainsArticle()) {
+        if (checkIfOrderLinesContainArticle()) {
             int index = getOrderLineIndexByArticleID();
             orderLine = orderLines.get(index);
             orderLine.setQuantity((byte) (orderLine.getQuantity() + 1));
@@ -110,12 +109,13 @@ public class ShoppingCartBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         params = fc.getExternalContext().getRequestParameterMap();
         orderLineID = Long.parseLong(params.get("orderLineID"));
-        for (OrderLine ol : orderLines) {
-//            --> Du kannst hier mit dem Vergleich eine NPE bekommen. Bitte Null-safe testen
-            if (orderLineID == ol.getArticle().getId()) {
-                byte b = (byte) ol.getQuantity();
-                b = (byte) (b + 1);
-                ol.setQuantity(b);
+        if (orderLineID != null) {
+            for (OrderLine ol : orderLines) {
+                if (orderLineID == ol.getArticle().getId()) {
+                    byte b = (byte) ol.getQuantity();
+                    b = (byte) (b + 1);
+                    ol.setQuantity(b);
+                }
             }
         }
     }
@@ -125,20 +125,20 @@ public class ShoppingCartBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         params = fc.getExternalContext().getRequestParameterMap();
         orderLineID = Long.parseLong(params.get("orderLineID"));
-        for (OrderLine ol : orderLines) {
-//            --> Du kannst hier mit dem Vergleich eine NPE bekommen. Bitte Null-safe testen
-            if (orderLineID == ol.getArticle().getId()) {
-                byte b = (byte) ol.getQuantity();
-                b = (byte) (b - 1);
-                ol.setQuantity(b);
+        if (orderLineID != null) {
+            for (OrderLine ol : orderLines) {
+                if (orderLineID == ol.getArticle().getId()) {
+                    byte b = (byte) ol.getQuantity();
+                    b = (byte) (b - 1);
+                    ol.setQuantity(b);
+                }
             }
         }
     }
 
-//     --> ?? JavaDoc
-    public String guest() {
+    public String changeToOrderPage() {
         setSessionMap();
-        return "guest";
+        return "orderPage";
     }
 
     public void setSessionMap() {

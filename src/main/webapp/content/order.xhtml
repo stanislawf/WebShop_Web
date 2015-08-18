@@ -34,10 +34,6 @@ and open the template in the editor.
                                 <p:messages for="deliveryAddress"/> 
                                 <c:if test="#{request.userPrincipal == null}" >
                                     <h:panelGrid columns="2" id="deliveryAddress">
-                                        <p:outputLabel value="Firstname:" for="firstnameDelivering"/>
-                                        <p:inputText required="true" id="firstnameDelivering"  value="#{orderBean.deliveryAddress.firstName}" requiredMessage="Please insert the firstname"/>
-                                        <p:outputLabel value="Lastname:" for="lastnameDelivering"/>
-                                        <p:inputText required="true"  id="lastnameDelivering"  value="#{orderBean.deliveryAddress.lastName}" requiredMessage="Please insert the lastname"/>
                                         <p:outputLabel value="Street:" for="streetDelivering"/>
                                         <p:inputText required="true"  id="streetDelivering" value="#{orderBean.deliveryAddress.street}" requiredMessage="Please insert the street"/>
                                         <p:outputLabel value="City:" for="cityDelivering"/>
@@ -88,10 +84,6 @@ and open the template in the editor.
                 <p:dialog height="70%" width="70%" draggable="false" widgetVar="confirm" header="Confirmation" resizable="false" appendTo="@(body)" modal="true">
                     <h:form>  <h4>Delivery Address:</h4>
                         <p:panelGrid columns="2">
-                            <p:outputLabel value="Firstname:"/>
-                            <p:outputLabel value="#{orderBean.order.deliveryAddress.firstName}"/>
-                            <p:outputLabel value="Lastname:" />
-                            <p:outputLabel value="#{orderBean.order.deliveryAddress.lastName}"/>
                             <p:outputLabel value="Street:" />
                             <p:outputLabel value="#{orderBean.order.deliveryAddress.street}" />
                             <p:outputLabel value="City:" />

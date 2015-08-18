@@ -20,8 +20,8 @@ and open the template in the editor.
           <h:outputStylesheet name="css/webshop.css"/>
         </f:facet>
         <f:metadata>
-            <f:viewParam id="articleID" name="articleID" value="#{articleBean.article.id}"/>
-              <f:viewParam id="articlesID" name="articleID" value="#{articleBean.article.id}"/>
+            <f:viewParam id="articleID" name="articleID" value="#{articleBean.selectedArticle.id}"/>
+            <f:viewParam id="articlesID" name="articleID" value="#{articleBean.selectedArticle.id}"/>
               <f:viewParam name="articleID" value="#{cartBean.articleID}"/>
           <f:viewAction action="#{articleBean.findArticleByID}"/>
           <f:viewAction action="#{cartBean.findArticle()}"/>
@@ -44,22 +44,19 @@ and open the template in the editor.
     </div> 
     <div class="content-warp">
     
-      <p:fieldset legend="#{articleBean.article.name}" style="margin-bottom:20px">
+        <p:fieldset legend="#{articleBean.selectedArticle.name}" style="margin-bottom:20px">
         <h:panelGrid columns="2" cellpadding="5">
           <p:graphicImage alt="Not yet uploaded" />
           <h:outputLabel value="Categories:"/>
        
           <h:outputLabel value="Preis:"/>
-          <h:outputText value="#{articleBean.article.price} €"/>
+          <h:outputText value="#{articleBean.selectedArticle.price} €"/>
           <h:outputLabel value="Description:"/>
-          <h:outputText value="#{articleBean.article.description}"/>
+          <h:outputText value="#{articleBean.selectedArticle.description}"/>
         </h:panelGrid>
       </p:fieldset>
         
-        <p:commandButton update=":loginform:navigationPanel" value="Add article to Cart" action="#{cartBean.addArticleToCart()}">
-          <!--  <f:attribute name="articleIDAction" value="#{articleBean.article.id}"/>-->
-          <!--  <f:setPropertyActionListener target="#{cartBean.articleID}" value="#{articleBean.article.id}" />-->
-        </p:commandButton>
+        <p:commandButton update=":loginform:navigationPanel" value="Add article to Cart" action="#{cartBean.addArticleToCart()}"/>
       
     </div>
       

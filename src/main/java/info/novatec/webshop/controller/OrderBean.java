@@ -13,7 +13,6 @@ import info.novatec.webshop.entities.CreditCard;
 import info.novatec.webshop.entities.OrderLine;
 import info.novatec.webshop.entities.PurchaseOrder;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -48,14 +47,13 @@ public class OrderBean implements Serializable {
         order = new PurchaseOrder();
         deliveryAddress = new Address();
         billingAddress = new Address();
-//        --> Was, wenn sessionMap leer ist oder cart nicht enthält??
+//        --> Was, wenn sessionMap leer ist oder cart nicht enthÃ¤lt??
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         Map<String, Object> sessionMap = externalContext.getSessionMap();
         orderLines = (List<OrderLine>) sessionMap.get("cart");
         totalPrice = calculateTotalPrice();
         creditCard = new CreditCard();
         account = new AccountUser();
-       
     }
     
     
@@ -164,8 +162,6 @@ public class OrderBean implements Serializable {
     }
     
     public void prepareOrder(){
-//        RequestContext context = RequestContext.getCurrentInstance();
-//        context.execute("PF('confirm').show();");
         order.setDeliveryAddress(deliveryAddress);
         if(checkboxValue){
             order.setBillingAddress(deliveryAddress);

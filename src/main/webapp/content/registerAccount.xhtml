@@ -25,7 +25,7 @@ and open the template in the editor.
             <h:body> 
                   <h:form id="registerAccount">
                         <div class="register">
-                            <h:messages errorClass="errorMessage" infoClass="infoMessage" warnClass="warnMessage"/>
+                            
                             <p:panelGrid columns="3" styleClass="register">
                                 <p:outputLabel value="Firstname: "/>
                                 <p:inputText id="firstname" value="#{registration.account.firstName}" validator="#{registerValidator.nameValidation}" required="true" requiredMessage="Please enter a Firstname"/>
@@ -46,7 +46,7 @@ and open the template in the editor.
                                 <p:inputText id="pnumber" value="#{registration.account.phoneNumber}" required="true" requiredMessage="Please enter the phone number"/>
                                 <p:message for="pnumber"/>
                                 <p:outputLabel value="Birthdate "/>
-                                <p:calendar id="birthdate" value='#{registration.account.birthday}' required="true" yearRange="c-100:c" pattern="dd-MM-yyyy" mask="true" navigator="true"  requiredMessage="Please enter your birthdate"/>
+                                <p:calendar id="birthdate" value="#{registration.birthDate}" required="true" yearRange="c-100:c" pattern="dd-MM-yyyy" mask="true" navigator="true"  requiredMessage="Please enter your birthdate"/>
                                 <p:message for="birthdate"/>
                                 <p:outputLabel value="Street "/>
                                 <p:inputText id="street" value="#{registration.address.street}"  required="true" requiredMessage="Please enter the Street"/>
@@ -67,6 +67,10 @@ and open the template in the editor.
                             </p:panelGrid>
                         </div>
                 
+                      <p:dialog widgetVar="confirmDialog" closable="false" draggable="false" resizable="false" appendTo="@(body)" modal="true">
+                          <p:outputLabel value="There is already a user with this email address. Please try another one."/><br/>
+                          <p:button value="Ok" onclick="PF('confirmDialog').close"/>
+                      </p:dialog>
 
                 </h:form>
 

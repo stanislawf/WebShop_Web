@@ -5,16 +5,11 @@
  */
 package info.novatec.webshop.controller;
 
-import info.novatec.webshop.entities.Account;
 import info.novatec.webshop.entities.AccountUser;
-import info.novatec.webshop.helpers.LoadArticleProperties;
-import info.novatec.webshop.persistence.AccountManager;
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
@@ -28,13 +23,11 @@ import javax.servlet.http.HttpServletRequest;
 @Named(value = "loginBean")
 @RequestScoped
 public class LoginBean implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
-    private Account account;
+    private AccountUser account;
     private String password, email;
-    @EJB
-    private AccountManager accountService;
     private boolean loggedIn;
 
     @PostConstruct
@@ -49,14 +42,12 @@ public class LoginBean implements Serializable {
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }
-    
-    
 
-    public Account getAccount() {
+    public AccountUser getAccount() {
         return account;
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(AccountUser account) {
         this.account = account;
     }
 
@@ -76,27 +67,25 @@ public class LoginBean implements Serializable {
         this.email = email;
     }
 
-    public void login() throws ServletException {
-        account = accountService.getAccountByEmail(email);
-
-        FacesContext fc = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
-
-//        --> email und passwort müssen umbedingt getestet werden!! request kann null- values erhalten!
-//            if (email.equalsIgnoreCase(account.getEmail()) && password.equals(account.getPassword())) {
+    public void login() {
+        try {
+            if (email != null && password != null) {
+                FacesContext fc = FacesContext.getCurrentInstance();
+                HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
                 request.login(email, password);
-                
-//                Principal principal = request.getUserPrincipal();
+            }
+        } catch (ServletException ex) {
+            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-//    --> Getestet? Dürfte nicht funktionieren ;)!
     public void logout() {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
         try {
             request.logout();
         } catch (ServletException exception) {
-           Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, exception);
+            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, exception);
         }
     }
 

@@ -8,7 +8,6 @@ package info.novatec.webshop.controller;
 import info.novatec.webshop.entities.Article;
 import info.novatec.webshop.persistence.ArticleManager;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -32,7 +31,7 @@ public class ArticleBean implements Serializable{
   private List<Article> randomArticles;
   
 //  --> Nichtssagend. Ist das der selektierte? Oder eine Helper? Oder nur was zum Anzeigen? Bitte Namen ändern.
-  private Article article;
+  private Article selectedArticle;
   
   @PostConstruct
   public void init() {
@@ -49,7 +48,7 @@ public class ArticleBean implements Serializable{
 //    for(Article randomArticle : randomArticles){
 //        System.out.println(randomArticle.getName());
 //    }
-    article = new Article();
+    selectedArticle = new Article();
   }
 
   public List<Article> getRandomArticles() {
@@ -60,14 +59,12 @@ public class ArticleBean implements Serializable{
     this.randomArticles = randomArticles;
   }
 
-
-
-  public Article getArticle() {
-    return article;
+  public Article getSelectedArticle() {
+    return selectedArticle;
   }
 
-  public void setArticle(Article article) {
-    this.article = article;
+  public void setSelectedArticle(Article article) {
+    this.selectedArticle = article;
   }
 
 
@@ -97,7 +94,7 @@ public class ArticleBean implements Serializable{
 //  --> Bin mir nicht sicher, ob Du das hier nocht brauchst. Name lässt einen
 //          Returnvalue vermuten. Bzw einen übergebenen Parameter
   public void findArticleByID(){
-    article = articleService.getArticleById(article.getId());
+    selectedArticle = articleService.getArticleById(selectedArticle.getId());
 //  System.err.println("Die ARticle-ID ist: " + article.getId() + " " + article.getCategories().size());
   }
   

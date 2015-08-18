@@ -9,16 +9,22 @@ import info.novatec.webshop.entities.Account;
 import info.novatec.webshop.entities.Address;
 import info.novatec.webshop.entities.AccountRole;
 import info.novatec.webshop.entities.AccountUser;
+import info.novatec.webshop.enums.RoleType;
+import info.novatec.webshop.helpers.PasswordEncryption;
 import info.novatec.webshop.persistence.AccountManager;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -27,78 +33,108 @@ import javax.inject.Named;
 @Named(value = "registration")
 @RequestScoped
 public class RegistrationBean implements Serializable {
-    
-  private static final long serialVersionUID = 1L;
 
-  @EJB
-  private AccountManager accountService;
+    private static final long serialVersionUID = 1L;
+    private Date birthDate;
 
-  private Account account;
-  private Address address;
-  private AccountRole role;
-  
-//Überprüfen ob bereits ein Account existiert.
-//
-  @PostConstruct
-  public void init() {
-    account = new AccountUser();
-    address = new Address();
-    role = new AccountRole();
-    
-  }
+    @EJB
+    private AccountManager accountService;
 
-  public AccountRole getRole() {
-    return role;
-  }
+    private AccountUser accountUser;
+    private Address address;
+    private AccountRole role;
 
-  public void setRole(AccountRole role) {
-    this.role = role;
-  }
+    @PostConstruct
+    public void init() {
+        accountUser = new AccountUser();
+        address = new Address();
+        role = new AccountRole();
 
-  public Account getAccount() {
-    return this.account;
-  }
+    }
 
-  public void setAccount(Account account) {
-    this.account = account;
-  }
+    public AccountRole getRole() {
+        return role;
+    }
 
-  public Address getAddress() {
-    return this.address;
-  }
+    public void setRole(AccountRole role) {
+        this.role = role;
+    }
 
-  public void setAddress(Address address) {
-    this.address = address;
-  }
+    public AccountUser getAccount() {
+        return this.accountUser;
+    }
 
-  public String registered() {
+    public void setAccount(AccountUser account) {
+        this.accountUser = account;
+    }
 
-//    try {
-//      role = accountService.getRoleByRoleType("User");
-//      List<AccountRole> roles = new ArrayList<>();
-//      roles.add(role);
-//      account.s(roles);
-//      boolean accountPersisted = accountService.createAccount(account);
-//      address.setFirstName(account.getFirstName());
-//      address.setLastName(account.getLastName());
-//      address.setAccount(account);
-//      boolean addressPersisted = accountService.createAddress(address);
-//      if(accountPersisted == true && addressPersisted == true){
-//         return "success";
-//      } 
-//    } catch (Exception e) {
-//      System.err.println("The user could not be registered");
-//      System.err.println(e.getMessage());
-//    }
-    return null;
-  }
+    public Address getAddress() {
+        return this.address;
+    }
 
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
-  
-  public void getAccountInformationByID(){
-    account =  accountService.getAccountById(account.getId());
-    List<Account> accounts = new ArrayList();
-    accounts.add(account);
-    address = accountService.getAddressByHomeAddress(true, accounts);
-  }
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String registered() {
+        boolean accountPersisted = false;
+        try {
+            role = accountService.getRoleByRoleType(RoleType.User);
+            List<AccountRole> roles = new ArrayList();
+            if (role != null) {
+                roles.add(role);
+            } else {
+                role.setRoleType(RoleType.User);
+                roles.add(role);
+            }
+
+            AccountUser existentUser = (AccountUser) accountService.getAccountByEmail(accountUser.getEmail());
+
+            if (existentUser == null) {
+                accountUser.setBirthday(convertToLocaDate(birthDate));
+                accountUser.setIsActive(true);
+                String password = accountUser.getPassword();
+                accountUser.setPassword(PasswordEncryption.securePassword(password));
+                accountUser.setRoles(roles);
+
+                List<Address> addresses = new ArrayList();
+                addresses.add(address);
+                accountUser.setAddresses(addresses);
+
+                List<Account> accounts = new ArrayList();
+                accounts.add(accountUser);
+                address.setAccount(accounts);
+
+                accountPersisted = accountService.createAccount(accountUser);
+            }else{
+                RequestContext context = RequestContext.getCurrentInstance();
+                context.execute("PF('confirmDialog').show();");
+            }
+            if (accountPersisted) {
+                return "success";
+            }
+        } catch (Exception exeption) {
+            Logger.getLogger(RegistrationBean.class.getName()).log(Level.SEVERE, "The user couldn´t be registered", exeption);
+        }
+        return null;
+    }
+
+    public LocalDate convertToLocaDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public void getAccountInformationByID() {
+        accountUser = (AccountUser) accountService.getAccountById(accountUser.getId());
+        List<Account> accounts = new ArrayList();
+        accounts.add(accountUser);
+        address = accountService.getAddressByAccountAndHomeAddress(accounts);
+    }
 }
