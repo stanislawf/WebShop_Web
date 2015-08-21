@@ -33,7 +33,7 @@ public class ShoppingCartBean implements Serializable {
     private OrderLine orderLine;
     private Long articleID;
     Article article;
-    Long orderLineID;
+    private Long selectedArticleID;
 
     @EJB
     private ArticleManager articleService;
@@ -65,27 +65,27 @@ public class ShoppingCartBean implements Serializable {
         return false;
     }
 
-    private int getOrderLineIndexByArticleID() {
+    private int findOrderLineIndexById(Long id) {
+        int result = -1;
         for (int i = 0; i < orderLines.size(); i++) {
-            if (orderLines.get(i).getArticle().getId().equals(article.getId())) {
-                return i;
+            if (orderLines.get(i).getArticle().getId().equals(id)) {
+                result = i;
+                break;
             }
         }
-
-//        --> Wird auf -1 als Result reagiert?
-        return -1;
+        return result;
     }
 
     public void addArticleToCart() {
         if (checkIfOrderLinesContainArticle()) {
-            int index = getOrderLineIndexByArticleID();
+            int index = findOrderLineIndexById(article.getId());
             orderLine = orderLines.get(index);
-            orderLine.setQuantity((byte) (orderLine.getQuantity() + 1));
+            orderLine.setQuantity((orderLine.getQuantity() + 1));
             orderLines.set(index, orderLine);
         } else {
             orderLine = new OrderLine();
             orderLine.setArticle(article);
-            orderLine.setQuantity(Byte.valueOf("1"));
+            orderLine.setQuantity(1);
             orderLines.add(orderLine);
         }
     }
@@ -93,13 +93,10 @@ public class ShoppingCartBean implements Serializable {
     public void removeArticleFromCart() {
         FacesContext fc = FacesContext.getCurrentInstance();
         Map<String, String> params = (Map<String, String>) fc.getExternalContext().getRequestParameterMap();
-        orderLineID = Long.parseLong(params.get("orderLineID"));
-
+        selectedArticleID = Long.parseLong(params.get("articleID"));
         int indexToDelete = -1;
-        for (int i = 0; i < orderLines.size(); i++) {
-            if (orderLines.get(i).getArticle().getId().equals(orderLineID)) {
-                indexToDelete = i;
-            }
+        if (selectedArticleID != null) {
+            indexToDelete = findOrderLineIndexById(selectedArticleID);
         }
         orderLines.remove(indexToDelete);
     }
@@ -108,32 +105,24 @@ public class ShoppingCartBean implements Serializable {
         Map<String, String> params;
         FacesContext fc = FacesContext.getCurrentInstance();
         params = fc.getExternalContext().getRequestParameterMap();
-        orderLineID = Long.parseLong(params.get("orderLineID"));
-        if (orderLineID != null) {
-            for (OrderLine ol : orderLines) {
-                if (orderLineID == ol.getArticle().getId()) {
-                    byte b = (byte) ol.getQuantity();
-                    b = (byte) (b + 1);
-                    ol.setQuantity(b);
-                }
-            }
+        selectedArticleID = Long.parseLong(params.get("articleID"));
+        int indexToDelete = -1;
+        if (selectedArticleID != null) {
+            indexToDelete = findOrderLineIndexById(selectedArticleID);
         }
+        orderLines.get(indexToDelete).setQuantity(orderLines.get(indexToDelete).getQuantity()+1);
     }
 
     public void decreaseArticleQuantity() {
         Map<String, String> params;
         FacesContext fc = FacesContext.getCurrentInstance();
         params = fc.getExternalContext().getRequestParameterMap();
-        orderLineID = Long.parseLong(params.get("orderLineID"));
-        if (orderLineID != null) {
-            for (OrderLine ol : orderLines) {
-                if (orderLineID == ol.getArticle().getId()) {
-                    byte b = (byte) ol.getQuantity();
-                    b = (byte) (b - 1);
-                    ol.setQuantity(b);
-                }
-            }
+        selectedArticleID = Long.parseLong(params.get("articleID"));
+          int indexToDelete = -1;
+        if (selectedArticleID != null) {
+            indexToDelete = findOrderLineIndexById(selectedArticleID);
         }
+        orderLines.get(indexToDelete).setQuantity(orderLines.get(indexToDelete).getQuantity()-1);
     }
 
     public String changeToOrderPage() {

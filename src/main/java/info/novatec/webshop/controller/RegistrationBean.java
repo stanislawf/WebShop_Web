@@ -104,14 +104,13 @@ public class RegistrationBean implements Serializable {
                 String password = accountUser.getPassword();
                 accountUser.setPassword(PasswordEncryption.securePassword(password));
                 accountUser.setRoles(roles);
-
+                address.setIsHomeAddress(true);
                 List<Address> addresses = new ArrayList();
                 addresses.add(address);
                 accountUser.setAddresses(addresses);
 
-                List<Account> accounts = new ArrayList();
-                accounts.add(accountUser);
-                address.setAccount(accounts);
+                
+                address.setAccount(accountUser);
 
                 accountPersisted = accountService.createAccount(accountUser);
             }else{
@@ -133,8 +132,6 @@ public class RegistrationBean implements Serializable {
 
     public void getAccountInformationByID() {
         accountUser = (AccountUser) accountService.getAccountById(accountUser.getId());
-        List<Account> accounts = new ArrayList();
-        accounts.add(accountUser);
-        address = accountService.getAddressByAccountAndHomeAddress(accounts);
+        address = accountService.getAddressByHomeAddress(true, accountUser);
     }
 }

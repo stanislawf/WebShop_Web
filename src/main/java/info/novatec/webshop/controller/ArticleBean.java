@@ -29,8 +29,6 @@ public class ArticleBean implements Serializable{
   private ArticleManager articleService;
   private List<Article> allArticles;
   private List<Article> randomArticles;
-  
-//  --> Nichtssagend. Ist das der selektierte? Oder eine Helper? Oder nur was zum Anzeigen? Bitte Namen ändern.
   private Article selectedArticle;
   
   @PostConstruct
@@ -95,7 +93,6 @@ public class ArticleBean implements Serializable{
 //          Returnvalue vermuten. Bzw einen übergebenen Parameter
   public void findArticleByID(){
     selectedArticle = articleService.getArticleById(selectedArticle.getId());
-//  System.err.println("Die ARticle-ID ist: " + article.getId() + " " + article.getCategories().size());
   }
   
   

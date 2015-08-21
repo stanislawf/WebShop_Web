@@ -21,7 +21,7 @@ and open the template in the editor.
                 </f:facet>
                 <f:metadata>
                     <f:viewParam name="categoryID" value="#{categoryBean.category.id}"/>
-                    <f:viewAction action="#{categoryBean.findCategoryByID}"/>
+                    <f:viewAction action="#{categoryBean.findselectedCategory()}"/>
                 </f:metadata>
             </h:head>
             <h:body>

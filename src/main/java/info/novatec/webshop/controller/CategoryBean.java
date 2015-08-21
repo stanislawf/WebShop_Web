@@ -22,66 +22,64 @@ import javax.enterprise.context.RequestScoped;
 @Named(value = "categoryBean")
 @RequestScoped
 public class CategoryBean implements Serializable {
-    
-  private static final long serialVersionUID = 1L;
 
-  @EJB
-  private CategoryManager categoryService;
-  private Category category;
-  private List<Category> allCategories; 
-  private List<Article> articlesByCategory;
+    private static final long serialVersionUID = 1L;
 
-  public List<Article> getArticlesByCategory() {
-    return articlesByCategory;
-  }
+    @EJB
+    private CategoryManager categoryService;
+    private Category category;
+    private List<Category> allCategories;
+    private List<Article> articlesByCategory;
 
-  public void setArticlesByCategory(List<Article> articlesByCategory) {
-    this.articlesByCategory = articlesByCategory;
-  }
+    public List<Article> getArticlesByCategory() {
+        return articlesByCategory;
+    }
 
-  @PostConstruct
-  public void init() {
-    allCategories = categoryService.getAllCategories();
-    category = new Category();
-  }
+    public void setArticlesByCategory(List<Article> articlesByCategory) {
+        this.articlesByCategory = articlesByCategory;
+    }
 
-  public List<Category> getAllCategories() {
-    return allCategories;
-  }
+    @PostConstruct
+    public void init() {
+        allCategories = categoryService.getAllCategories();
+        category = new Category();
+    }
 
-  public void setAllCategories(List<Category> allCategories) {
-    this.allCategories = allCategories;
-  }
+    public List<Category> getAllCategories() {
+        return allCategories;
+    }
 
-  public Category getCategory() {
-    return category;
-  }
+    public void setAllCategories(List<Category> allCategories) {
+        this.allCategories = allCategories;
+    }
 
-  public void setCategory(Category category) {
-    this.category = category;
-  }
-  
-//--> Name lässt einen
-//          Returnvalue vermuten. Bzw einen übergebenen Parameter
-//--> Ist das LazyLoading?
-  public void findCategoryByID() {
-    category = categoryService.getCategoryByID(category.getId());
-    this.findArticlesByCategoryName();
-  }
-  
-//  --> Name lässt einen
-//          Returnvalue vermuten. Bzw einen übergebenen Parameter
-  private void findArticlesByCategoryName(){
-    articlesByCategory = categoryService.getAllArticleByCategoryName(category.getName());
-  }
+    public Category getCategory() {
+        return category;
+    }
 
-//  --> JavaDoc
-  public String showCategoryArticles() {
-    if(category.getId() != null){
-        return "show";
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void findselectedCategory() {
+        for(Category cat : allCategories){
+            if(cat.getId().equals(category.getId())){
+                category = cat;
+            }
+        }
+        articlesByCategory = findArticlesForCategory();
     }
     
-    return null;
-  }
-  
+    private List<Article> findArticlesForCategory() {
+        return categoryService.getAllArticleByCategoryName(category.getName());
+    }
+
+    public String showCategoryArticles() {
+        String result = null;
+        if (category.getId() != null) {
+            result =  "show";
+        }
+        return result;
+    }
+
 }

@@ -10,28 +10,46 @@ import info.novatec.webshop.entities.AccountUser;
 import info.novatec.webshop.entities.Address;
 import info.novatec.webshop.entities.Bill;
 import info.novatec.webshop.entities.CreditCard;
+import info.novatec.webshop.entities.Guest;
 import info.novatec.webshop.entities.OrderLine;
 import info.novatec.webshop.entities.PurchaseOrder;
+import info.novatec.webshop.persistence.AccountManager;
+import info.novatec.webshop.persistence.BillManager;
+import info.novatec.webshop.persistence.OrderLineManager;
+import info.novatec.webshop.persistence.OrderManager;
 import java.io.Serializable;
+import java.security.Principal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-import javax.faces.context.ExternalContext;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author sf
  */
-@Named(value = "orderBean")
-@RequestScoped
+@ManagedBean(name = "orderBean")
+@ViewScoped
 public class OrderBean implements Serializable {
-    
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderBean.class);
+
+    @EJB
+    private OrderManager orderService;
+    @EJB
+    private AccountManager accountService;
+    @EJB
+    private BillManager billService;
     private PurchaseOrder order;
     private Address deliveryAddress;
     private Address billingAddress;
@@ -40,25 +58,53 @@ public class OrderBean implements Serializable {
     private List<OrderLine> orderLines;
     private Account account;
     private CreditCard creditCard;
-  
+    @Inject
+    private ShoppingCartBean shoppingcart;
+    FacesContext fc = FacesContext.getCurrentInstance();
+    HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
+    private Principal principal;
+    private Guest guest;
+    private boolean orderSucceeded = false;
+//    private boolean billExists = false;
+//    private boolean deliveryAddressExists = false;
+//    private boolean billingAddressExists = false;
+    private boolean accountExists = false;
 
     @PostConstruct
     public void init() {
         order = new PurchaseOrder();
         deliveryAddress = new Address();
         billingAddress = new Address();
-//        --> Was, wenn sessionMap leer ist oder cart nicht enthÃ¤lt??
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        Map<String, Object> sessionMap = externalContext.getSessionMap();
-        orderLines = (List<OrderLine>) sessionMap.get("cart");
+        orderLines = shoppingcart.getOrderLines();
         totalPrice = calculateTotalPrice();
         creditCard = new CreditCard();
-        account = new AccountUser();
+        principal = request.getUserPrincipal();
+        guest = new Guest();
+        if (request.getUserPrincipal() != null) {
+            principal = request.getUserPrincipal();
+            account = accountService.getAccountByEmail(principal.getName());
+        }
+        if (account != null) {
+            deliveryAddress = accountService.getAddressByHomeAddress(true, account);
+            billingAddress = accountService.getAddressByHomeAddress(true, account);
+        }
     }
-    
-    
 
-   
+    public boolean isOrderSucceeded() {
+        return orderSucceeded;
+    }
+
+    public void setOrderSucceeded(boolean orderSucceeded) {
+        this.orderSucceeded = orderSucceeded;
+    }
+
+    public Guest getGuest() {
+        return guest;
+    }
+
+    public void setGuest(Guest guest) {
+        this.guest = guest;
+    }
 
     public double getTotalPrice() {
         return totalPrice;
@@ -153,27 +199,149 @@ public class OrderBean implements Serializable {
 
     public void changeRenderValue(ValueChangeEvent e) {
         checkboxValue = (boolean) e.getNewValue();
-        
-        if(isCheckboxValue()){
+
+        if (isCheckboxValue()) {
             setRenderValue(true);
-        }else{
-           setRenderValue(false);
+        } else {
+            setRenderValue(false);
         }
     }
-    
-    public void prepareOrder(){
+
+    public void prepareOrder() {
+        LOGGER.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+        Guest existingGuest = null;
+        if (account == null) {
+            existingGuest = (Guest) accountService.getAccountByEmail(guest.getEmail());
+        }
+
+        Address existingDeliveryAddress = null;
+        Address existingBillingAddress;
+        Bill existingBill;
+        if (existingGuest != null) {
+            guest = existingGuest;
+            accountExists = true;
+            LOGGER.info("ExistingGuest: " + existingGuest.getEmail());
+        }
+        if (account != null) {
+            accountExists = true;
+        }
+
+        if (existingGuest != null) {
+            existingDeliveryAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), existingGuest);
+        } else {
+            existingDeliveryAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), account);
+        }
+
+        if (existingDeliveryAddress != null) {
+            deliveryAddress = existingDeliveryAddress;
+            LOGGER.info("ExistingDeliveryAddress: " + existingDeliveryAddress.getCity());
+
+        }
+        if (checkboxValue) {
+            if (existingGuest != null) {
+                existingBillingAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), existingGuest);
+            } else {
+                existingBillingAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), account);
+            }
+
+        } else {
+            if (existingGuest != null) {
+                existingBillingAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), existingGuest);
+            } else {
+                existingBillingAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), account);
+                LOGGER.info("I´m HERE");
+            }
+
+        }
+        if (existingBillingAddress != null) {
+            billingAddress = existingBillingAddress;
+            billingAddress.setIsHomeAddress(true);
+            LOGGER.info("ExistingBillingAddress: " + existingBillingAddress.getCity());
+            LOGGER.info("And HERE");
+        }
+
+        existingBill = billService.getBillByAccountNumberAndOwner(bill.getAccountNumber(), bill.getAccountOwner());
+        if (existingBill != null) {
+            bill = existingBill;
+//                billExists = true;
+            LOGGER.info("ExistingBill: " + existingBill.getAccountOwner());
+        }
+
+        if (existingGuest != null) {
+            deliveryAddress.setAccount(guest);
+            billingAddress.setAccount(guest);
+        } else {
+            deliveryAddress.setAccount(account);
+            billingAddress.setAccount(account);
+        }
+
+        LocalDate orderDate = LocalDate.now();
+        LOGGER.info(orderDate.toString());
+
+        order.setOrderDate(orderDate);
+
+        for (OrderLine ol : orderLines) {
+            ol.setOrder(order);
+        }
+
+        if (existingGuest != null) {
+            order.setAccount(guest);
+        } else {
+            order.setAccount(account);
+        }
+
         order.setDeliveryAddress(deliveryAddress);
-        if(checkboxValue){
+        if (checkboxValue) {
             order.setBillingAddress(deliveryAddress);
-        }else{
+        } else {
             order.setBillingAddress(billingAddress);
         }
+        List<Address> addresses = new ArrayList();
+        addresses.add(order.getBillingAddress());
+        if (existingGuest != null) {
+            guest.setAddresses(addresses);
+        }
+
         order.setTotalPrice(totalPrice);
         order.setOrderLines(orderLines);
         order.setBill(bill);
-        
+        LOGGER.info("THE ORDER HAS BEEN PREPARED!");
 
-        
+    }
+
+    public void persistOrder() {
+
+        LOGGER.info("TEST 2");
+        boolean accountPersisted = false;
+        boolean orderPersisted = false;
+        if (order != null) {
+            if (accountExists) {
+                if (account != null) {
+                    accountService.updateAccount(account);
+                } else {
+                    accountService.updateAccount(guest);
+                }
+
+                accountPersisted = true;
+            } else {
+                if (account != null) {
+                    accountPersisted = accountService.createAccount(account);
+                } else {
+                    accountPersisted = accountService.createAccount(guest);
+                }
+
+            }
+
+            orderPersisted = orderService.createOrder(order);
+            LOGGER.info("THE ORDER HAS BEEN PERSISTED!");
+            shoppingcart.clearCart();
+
+        }
+
+        if (accountPersisted && orderPersisted) {
+            orderSucceeded = true;
+        }
     }
 
 }

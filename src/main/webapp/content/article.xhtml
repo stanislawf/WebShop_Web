@@ -21,10 +21,10 @@ and open the template in the editor.
         </f:facet>
         <f:metadata>
             <f:viewParam id="articleID" name="articleID" value="#{articleBean.selectedArticle.id}"/>
-            <f:viewParam id="articlesID" name="articleID" value="#{articleBean.selectedArticle.id}"/>
+     <!--    <f:viewParam id="articlesID" name="articleID" value="#{articleBean.selectedArticle.id}"/>-->
               <f:viewParam name="articleID" value="#{cartBean.articleID}"/>
-          <f:viewAction action="#{articleBean.findArticleByID}"/>
-          <f:viewAction action="#{cartBean.findArticle()}"/>
+              <f:viewAction action="#{articleBean.findArticleByID}"/>
+         <f:viewAction action="#{cartBean.findArticle()}"/>
         </f:metadata>
       </h:head>
     <h:body><h:form>

@@ -22,44 +22,64 @@ and open the template in the editor.
             </h:head>
             <h:body>
 
-              
+
                 <div class="content-warp">
                     <h:form id="orderingForm">
                         <p:fieldset legend="Ordering process" id="fieldset">
                             <p:outputLabel value="Is the Billing Address the same as the Delivery Address? "/>
                             <p:selectBooleanCheckbox   onchange="submit()" value="#{orderBean.checkboxValue}" valueChangeListener="#{orderBean.changeRenderValue}" >
-                                <p:ajax update="panel2" />
+                                <p:ajax update="panel3" />
                             </p:selectBooleanCheckbox>
-                            <p:panel id="panel1" header="Delivery Address">
+                            <p:panel id="panel1" header="Customer Information">
+                                <p:messages for="customerInformation"/>
+                                <p:panelGrid columns="2" id="customerInformation">
+                                    <c:if test="#{request.userPrincipal == null}">
+                                        <p:outputLabel value="E-Mail:" for="email"/>
+                                        <p:inputText required="true"  id="email" value="#{orderBean.guest.email}" requiredMessage="Please insert your email address"/>
+                                        <p:outputLabel value="Firstname:" for="firstname"/>
+                                        <p:inputText required="true"  id="firstname"  value="#{orderBean.guest.firstName}" requiredMessage="Please insert your firstname"/>
+                                        <p:outputLabel value="Lastname" for="lastname" />
+                                        <p:inputText required="true" id="lastname" value="#{orderBean.guest.lastName}" requiredMessage="Please insert your lastname"/>
+                                    </c:if>
+                                    <c:if test="#{request.userPrincipal != null}">
+                                        <p:outputLabel value="E-Mail:" for="email"/>
+                                        <p:inputText required="true"  id="email" value="#{orderBean.account.email}" requiredMessage="Please insert your email address"/>
+                                        <p:outputLabel value="Firstname:" for="firstname"/>
+                                        <p:inputText required="true"  id="firstname"  value="#{orderBean.account.firstName}" requiredMessage="Please insert your firstname"/>
+                                        <p:outputLabel value="Lastname" for="lastname" />
+                                        <p:inputText required="true" id="lastname" value="#{orderBean.account.lastName}" requiredMessage="Please insert your lastname"/>
+                                    </c:if> 
+                                </p:panelGrid>
+                            </p:panel>
+                            <p:panel id="panel2" header="Delivery Address">
                                 <p:messages for="deliveryAddress"/> 
-                                <c:if test="#{request.userPrincipal == null}" >
-                                    <h:panelGrid columns="2" id="deliveryAddress">
-                                        <p:outputLabel value="Street:" for="streetDelivering"/>
-                                        <p:inputText required="true"  id="streetDelivering" value="#{orderBean.deliveryAddress.street}" requiredMessage="Please insert the street"/>
-                                        <p:outputLabel value="City:" for="cityDelivering"/>
-                                        <p:inputText required="true"  id="cityDelivering"  value="#{orderBean.deliveryAddress.city}" requiredMessage="Please insert the city"/>
-                                        <p:outputLabel value="ZIP-Code: " for="zipDelivering" />
-                                        <p:inputText required="true" maxlength="5" id="zipDelivering" value="#{orderBean.deliveryAddress.zipCode}" requiredMessage="Please insert the zip code"/>
-                                        <p:outputLabel value="Country"  for="countryDelivering"/>
-                                        <p:inputText required="true"  id="countryDelivering" value="#{orderBean.deliveryAddress.country}" requiredMessage="Please insert the country"/>  
-                                    </h:panelGrid>
-                                </c:if>
+
+                                <h:panelGrid columns="2" id="deliveryAddress">
+                                    <p:outputLabel value="Street:" for="streetDelivering"/>
+                                    <p:inputText required="true"  id="streetDelivering" value="#{orderBean.deliveryAddress.street}" requiredMessage="Please insert the street"/>
+                                    <p:outputLabel value="City:" for="cityDelivering"/>
+                                    <p:inputText required="true"  id="cityDelivering"  value="#{orderBean.deliveryAddress.city}" requiredMessage="Please insert the city"/>
+                                    <p:outputLabel value="ZIP-Code: " for="zipDelivering" />
+                                    <p:inputText required="true" maxlength="5" id="zipDelivering" value="#{orderBean.deliveryAddress.zipCode}" requiredMessage="Please insert the zip code"/>
+                                    <p:outputLabel value="Country"  for="countryDelivering"/>
+                                    <p:inputText required="true"  id="countryDelivering" value="#{orderBean.deliveryAddress.country}" requiredMessage="Please insert the country"/>  
+                                </h:panelGrid>
+
                             </p:panel>
-                            <p:panel id="panel2" header="Billing Address" rendered="#{orderBean.renderValue == false}">
+                            <p:panel id="panel3" header="Billing Address" rendered="#{orderBean.renderValue == false}">
                                 <p:messages for="billingAddress"/> 
-                                <c:if test="#{request.userPrincipal == null}" >
-                                    <h:panelGrid columns="2" id="billingAddress">
-                                        <p:outputLabel value="Street:" for="street"/>
-                                        <p:inputText required="true"  id="street" value="#{orderBean.billingAddress.street}"/>
-                                        <p:outputLabel value="City:" for="city"/>
-                                        <p:inputText required="true"  id="city"  value="#{orderBean.billingAddress.city}"/>
-                                        <p:outputLabel value="ZIP-Code: " for="zip" />
-                                        <p:inputText required="true" maxlength="5"  id="zip" value="#{orderBean.billingAddress.zipCode}"/>
-                                        <p:outputLabel value="Country"  for="country"/>
-                                        <p:inputText required="true"  id="country" value="#{orderBean.billingAddress.country}"/>                              
-                                    </h:panelGrid>  </c:if>
+                                <h:panelGrid columns="2" id="billingAddress">
+                                    <p:outputLabel value="Street:" for="street"/>
+                                    <p:inputText required="true"  id="street" value="#{orderBean.billingAddress.street}"/>
+                                    <p:outputLabel value="City:" for="city"/>
+                                    <p:inputText required="true"  id="city"  value="#{orderBean.billingAddress.city}"/>
+                                    <p:outputLabel value="ZIP-Code: " for="zip" />
+                                    <p:inputText required="true" maxlength="5"  id="zip" value="#{orderBean.billingAddress.zipCode}"/>
+                                    <p:outputLabel value="Country"  for="country"/>
+                                    <p:inputText required="true"  id="country" value="#{orderBean.billingAddress.country}"/>                              
+                                </h:panelGrid>  
                             </p:panel>
-                            <p:panel id="panel3" header="Billing Information">
+                            <p:panel id="panel4" header="Billing Information">
                                 <p:messages for="billingInfo"/> 
                                 <h:panelGrid columns="2" id="billingInfo">
                                     <p:outputLabel value="Account owner:" for="owner" />
@@ -73,76 +93,91 @@ and open the template in the editor.
                                 </h:panelGrid>
 
                             </p:panel>
-
-                            <p:commandButton onclick="PF('confirm').show();" action="#{orderBean.prepareOrder()}" value="Check Order"/>
                         </p:fieldset>
+                         <p:commandButton id="buttonPrepareOrder" action="#{orderBean.prepareOrder()}" oncomplete="PF('confirm').show(); return false;" update=":confirm" value="Check Order"/>
+                  
                     </h:form>
+                    
                 </div>
                 <br/>
 
 
-                <p:dialog height="70%" width="70%" draggable="false" widgetVar="confirm" header="Confirmation" resizable="false" appendTo="@(body)" modal="true">
-                    <h:form>  <h4>Delivery Address:</h4>
-                        <p:panelGrid columns="2">
-                            <p:outputLabel value="Street:" />
-                            <p:outputLabel value="#{orderBean.order.deliveryAddress.street}" />
-                            <p:outputLabel value="City:" />
-                            <p:outputLabel value="#{orderBean.order.deliveryAddress.city}" />
-                            <p:outputLabel value="ZIP-Code: " />
-                            <p:outputLabel value="#{orderBean.order.deliveryAddress.zipCode}" />
-                            <p:outputLabel value="Country"  />
-                            <p:outputLabel value="#{orderBean.order.deliveryAddress.country}" />  
-                        </p:panelGrid>
+                <p:dialog id="confirm" position="" height="60%" width="70%" draggable="false" widgetVar="confirm" header="Confirmation" resizable="false" appendTo="@(body)" modal="true">
+                    <p:scrollPanel mode="native" style="max-height:700px">  <h:form> 
+                            <p style="font-weight: bold;">Customer information</p>
+                            <p:panelGrid columns="2">
 
-                        <h4>Billing Address:</h4>
-                        <p:panelGrid columns="2">
-                            <p:outputLabel value="Street:" />
-                            <p:outputLabel value="#{orderBean.order.billingAddress.street}" />
-                            <p:outputLabel value="City:" />
-                            <p:outputLabel value="#{orderBean.order.billingAddress.city}" />
-                            <p:outputLabel value="ZIP-Code: " />
-                            <p:outputLabel value="#{orderBean.order.billingAddress.zipCode}" />
-                            <p:outputLabel value="Country"  />
-                            <p:outputLabel value="#{orderBean.order.billingAddress.country}" />  
-                        </p:panelGrid>
+                                <p:outputLabel value="E-Mail:" for="email"/>
+                                <p:outputLabel   id="email" value="#{orderBean.order.account.email}" />
+                                <p:outputLabel value="Firstname:" for="firstname"/>
+                                <p:outputLabel id="firstname"  value="#{orderBean.order.account.firstName}"/>
+                                <p:outputLabel value="Lastname" for="lastname" />
+                                <p:outputLabel  id="lastname" value="#{orderBean.order.account.lastName}"/>
+
+                            </p:panelGrid>
+                            <p style="font-weight: bold;">Delivery Address:</p>
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="Street:" />
+                                <p:outputLabel value="#{orderBean.order.deliveryAddress.street}" />
+                                <p:outputLabel value="City:" />
+                                <p:outputLabel value="#{orderBean.order.deliveryAddress.city}" />
+                                <p:outputLabel value="ZIP-Code: " />
+                                <p:outputLabel value="#{orderBean.order.deliveryAddress.zipCode}" />
+                                <p:outputLabel value="Country"  />
+                                <p:outputLabel value="#{orderBean.order.deliveryAddress.country}" />  
+                            </p:panelGrid>
+
+                            <p style="font-weight: bold;">Billing Address:</p>
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Street:" />
+                                <p:outputLabel value="#{orderBean.order.billingAddress.street}" />
+                                <p:outputLabel value="City:" />
+                                <p:outputLabel value="#{orderBean.order.billingAddress.city}" />
+                                <p:outputLabel value="ZIP-Code: " />
+                                <p:outputLabel value="#{orderBean.order.billingAddress.zipCode}" />
+                                <p:outputLabel value="Country"  />
+                                <p:outputLabel value="#{orderBean.order.billingAddress.country}" />  
+                            </p:panelGrid>
 
 
-                        <h4>Billing information:</h4>
-                        <p:panelGrid columns="2">
-                            <p:outputLabel value="Account owner:" />
-                            <p:outputLabel value="#{orderBean.order.bill.accountOwner}"/>
-                            <p:outputLabel value="Account number" />
-                            <p:outputLabel value="#{orderBean.order.bill.accountNumber}"/>
-                            <p:outputLabel value="Banc code:" />
-                            <p:outputLabel value="#{orderBean.order.bill.bankCode}"/>
-                            <p:outputLabel value="Bank name" />
-                            <p:outputLabel value="#{orderBean.order.bill.bankName}"/>
-                        </p:panelGrid>
+                            <p style="font-weight: bold;">Billing information</p>
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Account owner:" />
+                                <p:outputLabel value="#{orderBean.order.bill.accountOwner}"/>
+                                <p:outputLabel value="Account number" />
+                                <p:outputLabel value="#{orderBean.order.bill.accountNumber}"/>
+                                <p:outputLabel value="Banc code:" />
+                                <p:outputLabel value="#{orderBean.order.bill.bankCode}"/>
+                                <p:outputLabel value="Bank name" />
+                                <p:outputLabel value="#{orderBean.order.bill.bankName}"/>
+                            </p:panelGrid>
 
-                        <h4>Articles:</h4>
-                        <p:dataTable value="#{orderBean.order.orderLines}" var="orderLine">
+                            <p style="font-weight: bold;">Articles</p>
+                            <p:dataTable value="#{orderBean.order.orderLines}" var="orderLine">
 
-                            <p:column headerText="Article name">
-                                <p:outputLabel value="#{orderLine.article.name}"/>
-                            </p:column>
-                            <p:column headerText="Price">
-                                <p:outputLabel value="#{orderLine.article.price} €"/>
-                            </p:column>
-                            <p:column headerText="Quantity" >
-                                <div style="text-align: center">
-                                    <p:outputLabel value="    #{orderLine.quantity}       "/>
-                                </div>
-                            </p:column>
+                                <p:column headerText="Article name">
+                                    <p:outputLabel value="#{orderLine.article.name}"/>
+                                </p:column>
+                                <p:column headerText="Price">
+                                    <p:outputLabel value="#{orderLine.article.price} €"/>
+                                </p:column>
+                                <p:column headerText="Quantity" >
+                                    <div style="text-align: center">
+                                        <p:outputLabel value="    #{orderLine.quantity}       "/>
+                                    </div>
+                                </p:column>
 
-                            <p:column headerText="Total Article price">
-                                <p:outputLabel value="#{orderLine.quantity * orderLine.article.price}"/>
-                            </p:column>
+                                <p:column headerText="Total Article price">
+                                    <p:outputLabel value="#{orderLine.quantity * orderLine.article.price}"/>
+                                </p:column>
 
-                        </p:dataTable>
-                        <p:outputLabel style="font-weight: bold !important; float: right !important;" value=" #{orderBean.totalPrice} €"/>
-                        <p:outputLabel style="font-weight: bold !important; float: right !important; margin-right: 5px !important;" value="Total Price: "/>
+                            </p:dataTable>
+                            <p:outputLabel style="font-weight: bold !important; float: right !important;" value=" #{orderBean.order.totalPrice} €"/>
+                            <p:outputLabel style="font-weight: bold !important; float: right !important; margin-right: 5px !important;" value="Total Price: "/>
+                            <p:commandButton action="#{orderBean.persistOrder()}" update=":loginform:navigationPanel" value="Buy"/>
 
-                    </h:form>  </p:dialog>
+
+                        </h:form>     </p:scrollPanel>  </p:dialog>
 
 
 

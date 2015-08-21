@@ -38,13 +38,13 @@ and open the template in the editor.
                             </p:column>
                             <p:column headerText="Quantity" >
                                 <div style="text-align: center">
-                                    <p:commandButton value="-" action="#{cartBean.decreaseArticleQuantity()}" update=":cart, :loginform:navigationPanel">
-                                        <f:param name="orderLineID" value="#{orderLine.article.id}" />
+                                    <p:commandButton value="-" disabled="#{orderLine.quantity == 1}" action="#{cartBean.decreaseArticleQuantity()}" update=":cart, :loginform:navigationPanel">
+                                        <f:param name="articleID" value="#{orderLine.article.id}" />
                                     </p:commandButton>
 
                                     <p:outputLabel value="    #{orderLine.quantity}       "/>
                                     <p:commandButton value="+" action="#{cartBean.increaseArticleQuantity()}" update=":cart, :loginform:navigationPanel">
-                                        <f:param name="orderLineID" value="#{orderLine.article.id}" />
+                                        <f:param name="articleID" value="#{orderLine.article.id}" />
                                     </p:commandButton>
                                 </div>
                             </p:column>
@@ -55,7 +55,7 @@ and open the template in the editor.
 
                             <p:column>
                                 <p:commandButton value="Remove article" action="#{cartBean.removeArticleFromCart()}"  update=":cart, :loginform:navigationPanel">
-                                    <f:param name="orderLineID" value="#{orderLine.article.id}" />
+                                    <f:param name="articleID" value="#{orderLine.article.id}" />
                                 </p:commandButton>
                             </p:column>
                         </p:dataTable>
