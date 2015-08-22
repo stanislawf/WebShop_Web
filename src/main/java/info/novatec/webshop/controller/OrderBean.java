@@ -64,7 +64,7 @@ public class OrderBean implements Serializable {
     HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
     private Principal principal;
     private Guest guest;
-    private boolean orderSucceeded = false;
+//    private boolean orderSucceeded = false;
 //    private boolean billExists = false;
 //    private boolean deliveryAddressExists = false;
 //    private boolean billingAddressExists = false;
@@ -90,13 +90,7 @@ public class OrderBean implements Serializable {
         }
     }
 
-    public boolean isOrderSucceeded() {
-        return orderSucceeded;
-    }
-
-    public void setOrderSucceeded(boolean orderSucceeded) {
-        this.orderSucceeded = orderSucceeded;
-    }
+    
 
     public Guest getGuest() {
         return guest;
@@ -206,6 +200,7 @@ public class OrderBean implements Serializable {
             setRenderValue(false);
         }
     }
+    
 
     public void prepareOrder() {
         LOGGER.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -250,13 +245,13 @@ public class OrderBean implements Serializable {
                 existingBillingAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), existingGuest);
             } else {
                 existingBillingAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), account);
-                LOGGER.info("I´m HERE");
+                LOGGER.info("IÂ´m HERE");
             }
 
         }
         if (existingBillingAddress != null) {
             billingAddress = existingBillingAddress;
-            billingAddress.setIsHomeAddress(true);
+            billingAddress.setIsHomeAddress(false);
             LOGGER.info("ExistingBillingAddress: " + existingBillingAddress.getCity());
             LOGGER.info("And HERE");
         }
@@ -274,6 +269,7 @@ public class OrderBean implements Serializable {
         } else {
             deliveryAddress.setAccount(account);
             billingAddress.setAccount(account);
+            LOGGER.info("The billingAddress is: " + billingAddress.getCity());
         }
 
         LocalDate orderDate = LocalDate.now();
@@ -300,8 +296,11 @@ public class OrderBean implements Serializable {
         List<Address> addresses = new ArrayList();
         addresses.add(order.getBillingAddress());
         if (existingGuest != null) {
-            guest.setAddresses(addresses);
+              guest.setAddresses(addresses);
+            
         }
+      
+       
 
         order.setTotalPrice(totalPrice);
         order.setOrderLines(orderLines);
@@ -310,9 +309,9 @@ public class OrderBean implements Serializable {
 
     }
 
-    public void persistOrder() {
+    public String persistOrder() {
 
-        LOGGER.info("TEST 2");
+        LOGGER.info("ORDER ADDRESS: " + order.getBillingAddress().getStreet());
         boolean accountPersisted = false;
         boolean orderPersisted = false;
         if (order != null) {
@@ -330,7 +329,6 @@ public class OrderBean implements Serializable {
                 } else {
                     accountPersisted = accountService.createAccount(guest);
                 }
-
             }
 
             orderPersisted = orderService.createOrder(order);
@@ -340,8 +338,9 @@ public class OrderBean implements Serializable {
         }
 
         if (accountPersisted && orderPersisted) {
-            orderSucceeded = true;
+            return "successfulOrder";
         }
+        return null;
     }
 
 }
