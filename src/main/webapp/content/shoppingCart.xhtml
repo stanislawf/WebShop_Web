@@ -86,7 +86,7 @@ and open the template in the editor.
                                     <p:inputText value="#{loginBean.email}" id="username" required="true"/>
                                     <p:outputLabel value="Passwort:" for="password"/>
                                     <p:password value="#{loginBean.password}" id="password" required="true"/>
-                                    <p:commandButton value="Login" onclick="PF('regDialog').hide();" action="#{loginBean.login()}" update="@all"/>
+                                    <p:commandButton value="Login" onclick="PF('regDialog').hide();" action="#{loginBean.redirectAfterLogin()}" update="@all"/>
                                     <p/>
 
                                 </p:panelGrid>

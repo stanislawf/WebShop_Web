@@ -66,6 +66,11 @@ public class LoginBean implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+    
+    public String redirectAfterLogin(){
+        login();
+        return "toOrderPage";
+    }
 
     public void login() {
         try {

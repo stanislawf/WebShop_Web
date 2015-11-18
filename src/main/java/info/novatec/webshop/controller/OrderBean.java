@@ -5,7 +5,6 @@
  */
 package info.novatec.webshop.controller;
 
-import info.novatec.webshop.entities.Account;
 import info.novatec.webshop.entities.AccountUser;
 import info.novatec.webshop.entities.Address;
 import info.novatec.webshop.entities.Bill;
@@ -15,10 +14,8 @@ import info.novatec.webshop.entities.OrderLine;
 import info.novatec.webshop.entities.PurchaseOrder;
 import info.novatec.webshop.persistence.AccountManager;
 import info.novatec.webshop.persistence.BillManager;
-import info.novatec.webshop.persistence.OrderLineManager;
 import info.novatec.webshop.persistence.OrderManager;
 import java.io.Serializable;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,21 +50,16 @@ public class OrderBean implements Serializable {
     private PurchaseOrder order;
     private Address deliveryAddress;
     private Address billingAddress;
-    private Bill bill = new Bill();
+    private Bill bill;
     private double totalPrice;
     private List<OrderLine> orderLines;
-    private Account account;
+    private AccountUser account;
     private CreditCard creditCard;
     @Inject
     private ShoppingCartBean shoppingcart;
     FacesContext fc = FacesContext.getCurrentInstance();
     HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
-    private Principal principal;
     private Guest guest;
-//    private boolean orderSucceeded = false;
-//    private boolean billExists = false;
-//    private boolean deliveryAddressExists = false;
-//    private boolean billingAddressExists = false;
     private boolean accountExists = false;
 
     @PostConstruct
@@ -78,19 +70,15 @@ public class OrderBean implements Serializable {
         orderLines = shoppingcart.getOrderLines();
         totalPrice = calculateTotalPrice();
         creditCard = new CreditCard();
-        principal = request.getUserPrincipal();
         guest = new Guest();
+
+        bill = new Bill();
         if (request.getUserPrincipal() != null) {
-            principal = request.getUserPrincipal();
-            account = accountService.getAccountByEmail(principal.getName());
-        }
-        if (account != null) {
-            deliveryAddress = accountService.getAddressByHomeAddress(true, account);
+            account = (AccountUser) accountService.getAccountByEmail(request.getUserPrincipal().getName());
             billingAddress = accountService.getAddressByHomeAddress(true, account);
+            deliveryAddress = accountService.getAddressByHomeAddress(true, account);
         }
     }
-
-    
 
     public Guest getGuest() {
         return guest;
@@ -148,11 +136,11 @@ public class OrderBean implements Serializable {
         this.orderLines = orderLines;
     }
 
-    public Account getAccount() {
+    public AccountUser getAccount() {
         return account;
     }
 
-    public void setAccount(Account account) {
+    public void setAccount(AccountUser account) {
         this.account = account;
     }
 
@@ -200,77 +188,43 @@ public class OrderBean implements Serializable {
             setRenderValue(false);
         }
     }
-    
 
-    public void prepareOrder() {
-        LOGGER.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-        Guest existingGuest = null;
-        if (account == null) {
-            existingGuest = (Guest) accountService.getAccountByEmail(guest.getEmail());
-        }
-
+    public void prepareOrderForGuest() {
+        LOGGER.info("Method prepareOrderForGuest()");
+        Guest existingGuest = (Guest) accountService.getAccountByEmail(guest.getEmail());
         Address existingDeliveryAddress = null;
-        Address existingBillingAddress;
-        Bill existingBill;
+        Address existingBillingAddress = null;
+        Bill existingBill = null;
         if (existingGuest != null) {
             guest = existingGuest;
             accountExists = true;
-            LOGGER.info("ExistingGuest: " + existingGuest.getEmail());
-        }
-        if (account != null) {
-            accountExists = true;
-        }
-
-        if (existingGuest != null) {
-            existingDeliveryAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), existingGuest);
-        } else {
-            existingDeliveryAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), account);
-        }
-
-        if (existingDeliveryAddress != null) {
-            deliveryAddress = existingDeliveryAddress;
-            LOGGER.info("ExistingDeliveryAddress: " + existingDeliveryAddress.getCity());
 
         }
-        if (checkboxValue) {
-            if (existingGuest != null) {
-                existingBillingAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), existingGuest);
+
+        if (accountExists) {
+            existingBillingAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), guest);
+            if (checkboxValue) {
+                existingDeliveryAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), existingGuest);
             } else {
-                existingBillingAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), account);
+                existingDeliveryAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), existingGuest);
             }
-
-        } else {
-            if (existingGuest != null) {
-                existingBillingAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), existingGuest);
-            } else {
-                existingBillingAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), account);
-                LOGGER.info("IÂ´m HERE");
-            }
-
-        }
-        if (existingBillingAddress != null) {
-            billingAddress = existingBillingAddress;
-            billingAddress.setIsHomeAddress(false);
-            LOGGER.info("ExistingBillingAddress: " + existingBillingAddress.getCity());
-            LOGGER.info("And HERE");
         }
 
         existingBill = billService.getBillByAccountNumberAndOwner(bill.getAccountNumber(), bill.getAccountOwner());
+
+        if (existingBillingAddress != null) {
+            billingAddress = existingBillingAddress;
+        }
+        if (existingDeliveryAddress != null) {
+            deliveryAddress = existingDeliveryAddress;
+        }
         if (existingBill != null) {
             bill = existingBill;
-//                billExists = true;
-            LOGGER.info("ExistingBill: " + existingBill.getAccountOwner());
         }
 
-        if (existingGuest != null) {
-            deliveryAddress.setAccount(guest);
-            billingAddress.setAccount(guest);
-        } else {
-            deliveryAddress.setAccount(account);
-            billingAddress.setAccount(account);
-            LOGGER.info("The billingAddress is: " + billingAddress.getCity());
-        }
+        billingAddress.setIsHomeAddress(true);
+        deliveryAddress.setAccount(guest);
+        billingAddress.setAccount(guest);
 
         LocalDate orderDate = LocalDate.now();
         LOGGER.info(orderDate.toString());
@@ -281,66 +235,152 @@ public class OrderBean implements Serializable {
             ol.setOrder(order);
         }
 
-        if (existingGuest != null) {
-            order.setAccount(guest);
-        } else {
-            order.setAccount(account);
-        }
+        order.setAccount(guest);
 
-        order.setDeliveryAddress(deliveryAddress);
-        if (checkboxValue) {
-            order.setBillingAddress(deliveryAddress);
-        } else {
-            order.setBillingAddress(billingAddress);
-        }
+        order.setBillingAddress(billingAddress);
         List<Address> addresses = new ArrayList();
-        addresses.add(order.getBillingAddress());
-        if (existingGuest != null) {
-              guest.setAddresses(addresses);
-            
-        }
-      
-       
+        if (checkboxValue || order.getBillingAddress().equals(order.getDeliveryAddress())) {
+            order.setDeliveryAddress(billingAddress);
+            addresses.add(order.getBillingAddress());
+        } else {
 
+            addresses.add(order.getBillingAddress());
+            addresses.add(order.getDeliveryAddress());
+        }
+
+        guest.setAddresses(addresses);
         order.setTotalPrice(totalPrice);
         order.setOrderLines(orderLines);
         order.setBill(bill);
-        LOGGER.info("THE ORDER HAS BEEN PREPARED!");
-
     }
 
-    public String persistOrder() {
+    public void prepareOrderForAccountUser() {
+        LOGGER.info("Method prepareOrderForAccountUser()");
+        AccountUser existingAccountUser = null;
+        if (request.getUserPrincipal() != null) {
+            existingAccountUser = (AccountUser) accountService.getAccountByEmail(request.getUserPrincipal().getName());
+        }
+        Address existingDeliveryAddress = null;
+        Address existingBillingAddress = null;
+        Bill existingBill = null;
+        if (existingAccountUser != null) {
+            account = existingAccountUser;
+            accountExists = true;
+        }
 
-        LOGGER.info("ORDER ADDRESS: " + order.getBillingAddress().getStreet());
-        boolean accountPersisted = false;
-        boolean orderPersisted = false;
-        if (order != null) {
-            if (accountExists) {
-                if (account != null) {
-                    accountService.updateAccount(account);
-                } else {
-                    accountService.updateAccount(guest);
-                }
-
-                accountPersisted = true;
+        if (accountExists) {
+            existingBillingAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), account);
+            if (checkboxValue) {
+                existingDeliveryAddress = accountService.getAddressByStreetAndAccount(billingAddress.getStreet(), existingAccountUser);
             } else {
-                if (account != null) {
-                    accountPersisted = accountService.createAccount(account);
-                } else {
-                    accountPersisted = accountService.createAccount(guest);
-                }
+                existingDeliveryAddress = accountService.getAddressByStreetAndAccount(deliveryAddress.getStreet(), existingAccountUser);
             }
+        }
 
-            orderPersisted = orderService.createOrder(order);
-            LOGGER.info("THE ORDER HAS BEEN PERSISTED!");
-            shoppingcart.clearCart();
+        existingBill = billService.getBillByAccountNumberAndOwner(bill.getAccountNumber(), bill.getAccountOwner());
+
+        if (existingBillingAddress != null) {
+            billingAddress = existingBillingAddress;
+        }
+        if (existingDeliveryAddress != null) {
+            deliveryAddress = existingDeliveryAddress;
+        }
+        if (existingBill != null) {
+            bill = existingBill;
+        }
+
+        billingAddress.setIsHomeAddress(true);
+        deliveryAddress.setAccount(account);
+        billingAddress.setAccount(account);
+
+        LocalDate orderDate = LocalDate.now();
+        LOGGER.info(orderDate.toString());
+
+        order.setOrderDate(orderDate);
+
+        for (OrderLine ol : orderLines) {
+            ol.setOrder(order);
+        }
+
+        order.setAccount(account);
+
+        order.setBillingAddress(billingAddress);
+        List<Address> addresses = new ArrayList();
+        if (checkboxValue || order.getBillingAddress().equals(order.getDeliveryAddress())) {
+            order.setDeliveryAddress(billingAddress);
+            addresses.add(order.getBillingAddress());
+            LOGGER.info("SAME");
+        } else {
+
+            addresses.add(order.getBillingAddress());
+            addresses.add(order.getDeliveryAddress());
 
         }
 
-        if (accountPersisted && orderPersisted) {
-            return "successfulOrder";
+        account.setAddresses(addresses);
+        order.setTotalPrice(totalPrice);
+        order.setOrderLines(orderLines);
+        order.setBill(bill);
+
+    }
+
+    public void prepareOrder() {
+        LOGGER.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        if (request.getUserPrincipal() != null) {
+            prepareOrderForAccountUser();
+        } else {
+            prepareOrderForGuest();
+        }
+        LOGGER.info("THE ORDER HAS BEEN PREPARED!");
+    }
+
+    public String persistOrder() {
+        boolean orderPersisted = false;
+        LOGGER.info("OrderInformation");
+        LOGGER.info("Deliveraddress:" + order.getDeliveryAddress().getStreet());
+        LOGGER.info("Billingaddress:" + order.getBillingAddress().getStreet());
+
+        if (request.getUserPrincipal() != null) {
+            persistOrderWithAccount();
+            orderPersisted = true;
+        } else {
+            persistOrderWithGuest();
+            orderPersisted = true;
+        }
+
+        if (orderPersisted) {
+            LOGGER.info("THE ORDER HAS BEEN PERSISTED!");
+            shoppingcart.clearCart();
+            return "successfullOrder";
         }
         return null;
     }
 
+    public void persistOrderWithAccount() {
+        if (order != null) {
+            if (accountExists) {
+                LOGGER.info("updateAccount");
+                accountService.updateAccount(account);
+
+            } else {
+                LOGGER.info("persistGuest");
+                accountService.createAccount(account);
+            }
+            orderService.createOrder(order);
+        }
+    }
+
+    public void persistOrderWithGuest() {
+        LOGGER.info("Method persistOrderWithGuest");
+        if (order != null) {
+            if (!accountExists) {
+                LOGGER.info("persistGuest");
+                accountService.createAccount(guest);
+            } else {
+                accountService.updateAccount(guest);
+            }
+            orderService.createOrder(order);
+        }
+
+    }
 }

@@ -15,6 +15,24 @@
     <navigation-rule>
         <from-view-id>/content/shoppingCart.xhtml</from-view-id>
         <navigation-case>
+            <from-action>#{loginBean.redirectAfterLogin()</from-action>
+            <from-outcome>toOrderPage</from-outcome>
+            <to-view-id>/content/order.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/content/order.xhtml</from-view-id>
+        <navigation-case>
+            <from-action>#{orderBean.persistOrder()}</from-action>
+            <from-outcome>successfullOrder</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/content/shoppingCart.xhtml</from-view-id>
+        <navigation-case>
             <from-action>#{cartBean.changeToOrderPage()}</from-action>
             <from-outcome>orderPage</from-outcome>
             <to-view-id>/content/order.xhtml</to-view-id>
@@ -22,7 +40,7 @@
         </navigation-case>
     </navigation-rule>
     
-      <navigation-rule>
+    <navigation-rule>
         <from-view-id>/content/loginError.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>loginFailureBack</from-outcome>
@@ -46,7 +64,7 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
-     <navigation-rule>
+    <navigation-rule>
         <from-view-id>/content/order.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>register</from-outcome> 
@@ -54,7 +72,7 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
-      <navigation-rule>
+    <navigation-rule>
         <from-view-id>/index.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>cart</from-outcome> 
@@ -70,7 +88,7 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
-     <navigation-rule>
+    <navigation-rule>
         <from-view-id>/content/shoppingCart.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>cart</from-outcome> 
@@ -90,7 +108,7 @@
         <from-view-id>/content/article.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>cart</from-outcome>
-             <to-view-id>/content/shoppingCart.xhtml</to-view-id>
+            <to-view-id>/content/shoppingCart.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

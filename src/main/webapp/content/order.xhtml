@@ -11,7 +11,8 @@ and open the template in the editor.
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"> 
-    <ui:composition template="/content/template/template.xhtml">  
+    <ui:composition template="/content/template/template.xhtml">
+       
         <ui:define name="content">
             <h:head>
                 <f:facet name="first">
@@ -26,7 +27,7 @@ and open the template in the editor.
                 <div class="content-warp">
                     <h:form id="orderingForm">
                         <p:fieldset legend="Ordering process" id="fieldset">
-                            <p:outputLabel value="Is the Billing Address the same as the Delivery Address? "/>
+                            <p:outputLabel value="Is the Delivery Address the same as the Billing Address? "/>
                             <p:selectBooleanCheckbox   onchange="submit()" value="#{orderBean.checkboxValue}" valueChangeListener="#{orderBean.changeRenderValue}" >
                                 <p:ajax update="panel3" />
                             </p:selectBooleanCheckbox>
@@ -51,24 +52,10 @@ and open the template in the editor.
                                     </c:if> 
                                 </p:panelGrid>
                             </p:panel>
-                            <p:panel id="panel2" header="Delivery Address">
-                                <p:messages for="deliveryAddress"/> 
 
-                                <h:panelGrid columns="2" id="deliveryAddress">
-                                    <p:outputLabel value="Street:" for="streetDelivering"/>
-                                    <p:inputText required="true"  id="streetDelivering" value="#{orderBean.deliveryAddress.street}" requiredMessage="Please insert the street"/>
-                                    <p:outputLabel value="City:" for="cityDelivering"/>
-                                    <p:inputText required="true"  id="cityDelivering"  value="#{orderBean.deliveryAddress.city}" requiredMessage="Please insert the city"/>
-                                    <p:outputLabel value="ZIP-Code: " for="zipDelivering" />
-                                    <p:inputText required="true" maxlength="5" id="zipDelivering" value="#{orderBean.deliveryAddress.zipCode}" requiredMessage="Please insert the zip code"/>
-                                    <p:outputLabel value="Country"  for="countryDelivering"/>
-                                    <p:inputText required="true"  id="countryDelivering" value="#{orderBean.deliveryAddress.country}" requiredMessage="Please insert the country"/>  
-                                </h:panelGrid>
-
-                            </p:panel>
-                            <p:panel id="panel3" header="Billing Address" rendered="#{orderBean.renderValue == false}">
+                            <p:panel id="panel2" header="Billing Address" >
                                 <p:messages for="billingAddress"/> 
-                                <h:panelGrid columns="2" id="billingAddress">
+                                <p:panelGrid columns="2" id="billingAddress">
                                     <p:outputLabel value="Street:" for="street"/>
                                     <p:inputText required="true"  id="street" value="#{orderBean.billingAddress.street}"/>
                                     <p:outputLabel value="City:" for="city"/>
@@ -77,11 +64,26 @@ and open the template in the editor.
                                     <p:inputText required="true" maxlength="5"  id="zip" value="#{orderBean.billingAddress.zipCode}"/>
                                     <p:outputLabel value="Country"  for="country"/>
                                     <p:inputText required="true"  id="country" value="#{orderBean.billingAddress.country}"/>                              
-                                </h:panelGrid>  
+                                </p:panelGrid>  
+                            </p:panel>
+                            <p:panel id="panel3" header="Delivery Address" rendered="#{orderBean.renderValue == false}">
+                                <p:messages for="deliveryAddress"/> 
+
+                                <p:panelGrid columns="2" id="deliveryAddress">
+                                    <p:outputLabel value="Street:" for="streetDelivering"/>
+                                    <p:inputText required="true"  id="streetDelivering" value="#{orderBean.deliveryAddress.street}" requiredMessage="Please insert the street"/>
+                                    <p:outputLabel value="City:" for="cityDelivering"/>
+                                    <p:inputText required="true"  id="cityDelivering"  value="#{orderBean.deliveryAddress.city}" requiredMessage="Please insert the city"/>
+                                    <p:outputLabel value="ZIP-Code: " for="zipDelivering" />
+                                    <p:inputText required="true" maxlength="5" id="zipDelivering" value="#{orderBean.deliveryAddress.zipCode}" requiredMessage="Please insert the zip code"/>
+                                    <p:outputLabel value="Country"  for="countryDelivering"/>
+                                    <p:inputText required="true"  id="countryDelivering" value="#{orderBean.deliveryAddress.country}" requiredMessage="Please insert the country"/>  
+                                </p:panelGrid>
+
                             </p:panel>
                             <p:panel id="panel4" header="Billing Information">
                                 <p:messages for="billingInfo"/> 
-                                <h:panelGrid columns="2" id="billingInfo">
+                                <p:panelGrid columns="2" id="billingInfo">
                                     <p:outputLabel value="Account owner:" for="owner" />
                                     <p:inputText required="true"  id="owner" value="#{orderBean.bill.accountOwner}"/>
                                     <p:outputLabel value="Account number" for="number" />
@@ -90,14 +92,14 @@ and open the template in the editor.
                                     <p:inputText required="true"  id="code" value="#{orderBean.bill.bankCode}"/>
                                     <p:outputLabel value="Bank name" for="bank"/>
                                     <p:inputText required="true"  id="bank" value="#{orderBean.bill.bankName}"/>
-                                </h:panelGrid>
+                                </p:panelGrid>
 
                             </p:panel>
                         </p:fieldset>
-                         <p:commandButton id="buttonPrepareOrder" action="#{orderBean.prepareOrder()}" oncomplete="PF('confirm').show(); return false;" update=":confirm" value="Check Order"/>
-                  
+                        <p:commandButton id="buttonPrepareOrder" action="#{orderBean.prepareOrder()}" oncomplete="PF('confirm').show(); return false;" update=":confirm" value="Check Order"/>
+
                     </h:form>
-                    
+
                 </div>
                 <br/>
 
@@ -115,17 +117,6 @@ and open the template in the editor.
                                 <p:outputLabel  id="lastname" value="#{orderBean.order.account.lastName}"/>
 
                             </p:panelGrid>
-                            <p style="font-weight: bold;">Delivery Address:</p>
-                            <p:panelGrid columns="2" >
-                                <p:outputLabel value="Street:" />
-                                <p:outputLabel value="#{orderBean.order.deliveryAddress.street}" />
-                                <p:outputLabel value="City:" />
-                                <p:outputLabel value="#{orderBean.order.deliveryAddress.city}" />
-                                <p:outputLabel value="ZIP-Code: " />
-                                <p:outputLabel value="#{orderBean.order.deliveryAddress.zipCode}" />
-                                <p:outputLabel value="Country"  />
-                                <p:outputLabel value="#{orderBean.order.deliveryAddress.country}" />  
-                            </p:panelGrid>
 
                             <p style="font-weight: bold;">Billing Address:</p>
                             <p:panelGrid columns="2">
@@ -138,6 +129,20 @@ and open the template in the editor.
                                 <p:outputLabel value="Country"  />
                                 <p:outputLabel value="#{orderBean.order.billingAddress.country}" />  
                             </p:panelGrid>
+
+                            <p style="font-weight: bold;">Delivery Address:</p>
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="Street:" />
+                                <p:outputLabel value="#{orderBean.order.deliveryAddress.street}" />
+                                <p:outputLabel value="City:" />
+                                <p:outputLabel value="#{orderBean.order.deliveryAddress.city}" />
+                                <p:outputLabel value="ZIP-Code: " />
+                                <p:outputLabel value="#{orderBean.order.deliveryAddress.zipCode}" />
+                                <p:outputLabel value="Country"  />
+                                <p:outputLabel value="#{orderBean.order.deliveryAddress.country}" />  
+                            </p:panelGrid>
+
+
 
 
                             <p style="font-weight: bold;">Billing information</p>
